@@ -1,0 +1,402 @@
+/* ==========================================================================
+   FAZO Restorani Namangan Design System & Core Styles
+   ========================================================================== */
+
+:root {
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  
+  --primary: #d97706;
+  --primary-hover: #b45309;
+  --primary-light: #fffbe6;
+  --accent: #059669;
+  --accent-gold: #f59e0b;
+  
+  --dark: #0f172a;
+  --dark-surface: #1e293b;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  
+  --bg-light: #f8fafc;
+  --bg-card: #ffffff;
+  
+  --border-color: #e2e8f0;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
+  
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 16px 36px rgba(15, 23, 42, 0.12);
+  --shadow-primary: 0 8px 25px rgba(217, 119, 6, 0.25);
+  
+  --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background-color: var(--bg-light);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Custom Buttons */
+.btn-primary-custom {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 0.7rem 1.6rem;
+  box-shadow: 0 8px 22px rgba(217, 119, 6, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary-custom:hover, .btn-primary-custom:focus {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(217, 119, 6, 0.45);
+}
+
+.btn-outline-custom {
+  border: 2px solid #d97706;
+  color: #d97706;
+  background-color: rgba(245, 158, 11, 0.06);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  padding: 0.65rem 1.5rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-outline-custom:hover {
+  background-color: #d97706;
+  color: #ffffff;
+  border-color: #d97706;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(217, 119, 6, 0.3);
+}
+
+/* Cards & Components */
+.card-food {
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 20px;
+  background: var(--bg-card);
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-food:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 38px rgba(15, 23, 42, 0.12);
+  border-color: rgba(230, 81, 0, 0.3);
+}
+
+.food-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 210px;
+  overflow: hidden;
+}
+
+.food-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-food:hover .food-image {
+  transform: scale(1.08);
+}
+
+.badge-category {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+}
+
+.badge-popular {
+  background: linear-gradient(135deg, #ff9800 0%, #ff6d00 100%);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 14px rgba(255, 109, 0, 0.4);
+}
+
+/* Categories Pills */
+.category-pill {
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius-pill);
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-pill:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: rgba(230, 81, 0, 0.3);
+}
+
+.category-pill.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-primary);
+}
+
+/* Glass Navbar */
+.navbar-custom {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  position: sticky;
+  top: 0;
+  z-index: 1040;
+}
+
+/* Sticky Mobile Cart Floating Bar */
+.mobile-sticky-cart {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 420px;
+  background: var(--dark);
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Navbar Custom Glass Styling */
+.navbar-custom {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.18);
+  box-shadow: 0 4px 25px rgba(15, 23, 42, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+.dropdown-toggle-no-caret::after {
+  display: none !important;
+}
+
+.nav-link-custom {
+  color: #475569;
+  font-weight: 600;
+  padding: 0.45rem 0.95rem !important;
+  border-radius: var(--radius-pill);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link-custom:hover, .nav-link-custom.active {
+  color: #d97706 !important;
+  background-color: rgba(245, 158, 11, 0.08);
+}
+
+/* Custom Modal */
+.modal-backdrop-custom {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+/* Quantity controls */
+.qty-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.qty-btn:hover:not(:disabled) {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.qty-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ==========================================================================
+   Hero Section Animations
+   ========================================================================== */
+
+/* Floating Hero Image Levitation */
+.animate-hero-float {
+  animation: floatLevitate 5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+@keyframes floatLevitate {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(0.8deg);
+  }
+}
+
+/* Floating Chef Badge */
+.animate-badge-float {
+  animation: heroBadgeFloat 4s ease-in-out infinite alternate;
+}
+
+@keyframes heroBadgeFloat {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  }
+  100% {
+    transform: translateY(-10px) rotate(-1deg);
+    box-shadow: 0 18px 35px rgba(230, 81, 0, 0.2);
+  }
+}
+
+/* Glowing Ambient Ambient Lighting Blob */
+.animate-glow-blob {
+  animation: pulseGlow 6s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% {
+    opacity: 0.12;
+    transform: translateY(-50%) scale(1);
+    filter: blur(80px);
+  }
+  100% {
+    opacity: 0.28;
+    transform: translateY(-45%) scale(1.15);
+    filter: blur(100px);
+  }
+}
+
+/* Shimmering Text Gradient for Hero Tagline */
+.animated-gradient-text {
+  background: linear-gradient(135deg, #e65100 0%, #ff9800 50%, #ff6d00 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shineGradient 4s linear infinite;
+}
+
+@keyframes shineGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Staggered Fade Up Entrance Animations */
+.animate-fade-up-1 {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.animate-fade-up-2 {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.15s both;
+}
+.animate-fade-up-3 {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+}
+.animate-fade-up-4 {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.45s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Flame Icon Bounce */
+.animate-flame-bounce {
+  display: inline-block;
+  animation: flameBounce 1.8s ease-in-out infinite;
+}
+
+@keyframes flameBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.15);
+  }
+}
