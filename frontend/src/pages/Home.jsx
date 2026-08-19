@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Sparkles, Utensils, ArrowRight, ShieldCheck, Heart, Clock, MapPin, Phone } from 'lucide-react';
+import { Utensils, ArrowRight, ShieldCheck, Heart, Clock, MapPin, Phone } from 'lucide-react';
 import Hero from '../components/Hero';
 import CategoryCard from '../components/CategoryCard';
 import Loading from '../components/Loading';
@@ -16,21 +16,29 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let isMounted = true;
     const fetchCategories = async () => {
       try {
         setLoading(true);
         const catRes = await categoryService.getCategories();
-        if (catRes.success && catRes.data) {
+        if (isMounted && catRes.success && catRes.data) {
           setCategories(catRes.data);
         }
       } catch (err) {
-        setError(err.message || 'Kategoriyalarni yuklashda xatolik yuz berdi.');
+        if (isMounted) {
+          setError(err.message || 'Kategoriyalarni yuklashda xatolik yuz berdi.');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchCategories();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleCategoryClick = (categoryName) => {
@@ -42,7 +50,7 @@ const Home = () => {
       {/* 1. Hero Section */}
       <Hero />
 
-      {/* 2. Categories Section (Clicking any category opens all dishes of that category on the Menu page) */}
+      {/* 2. Food Categories Section */}
       <section className="py-5 bg-white">
         <div className="container py-lg-4">
           <div className="text-center mb-5">
@@ -72,7 +80,7 @@ const Home = () => {
             </div>
           )}
 
-          {/* CTA button to View Full Menu Page */}
+          {/* CTA to Full Menu Page */}
           <div className="text-center mt-5">
             <Link to="/menu" className="btn btn-primary-custom btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg d-inline-flex align-items-center gap-2">
               <Utensils size={20} />
@@ -83,7 +91,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 3. About Restaurant Section */}
+      {/* 3. About Restaurant Story Section */}
       <section className="py-5 bg-light overflow-hidden">
         <div className="container py-lg-4">
           <div className="row align-items-center g-5">
