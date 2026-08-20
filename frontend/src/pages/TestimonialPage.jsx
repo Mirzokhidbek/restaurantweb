@@ -3,7 +3,6 @@ import TestimonialCard from '../components/TestimonialCard';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
 import testimonialService from '../services/testimonialService';
-import { Star, Send } from 'lucide-react';
 
 const TestimonialPage = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -14,7 +13,7 @@ const TestimonialPage = () => {
     customerName: '',
     reviewText: '',
     rating: 5,
-    position: 'Customer',
+    position: 'Mijoz',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
   });
   const [submitting, setSubmitting] = useState(false);
@@ -28,7 +27,7 @@ const TestimonialPage = () => {
         setTestimonials(res.data);
       }
     } catch (err) {
-      setError(err.message || 'Failed to load reviews.');
+      setError(err.message || 'Sharhlarni yuklashda xatolik yuz berdi.');
     } finally {
       setLoading(false);
     }
@@ -44,17 +43,17 @@ const TestimonialPage = () => {
     setSuccessMsg(null);
     try {
       await testimonialService.createTestimonial(form);
-      setSuccessMsg('Thank you! Your review has been published.');
+      setSuccessMsg('Rahmat! Sharhingiz muvaffaqiyatli chop etildi.');
       setForm({
         customerName: '',
         reviewText: '',
         rating: 5,
-        position: 'Customer',
+        position: 'Mijoz',
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
       });
       fetchTestimonials();
     } catch (err) {
-      setError(err.message || 'Failed to submit review.');
+      setError(err.message || 'Sharh yuborishda xatolik yuz berdi.');
     } finally {
       setSubmitting(false);
     }
@@ -64,17 +63,17 @@ const TestimonialPage = () => {
     <div className="testimonial-page py-5 bg-light min-vh-100">
       <div className="container">
         <div className="text-center mb-5">
-          <span className="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill fw-bold mb-2">
-            Real Feedback
+          <span className="badge bg-warning bg-opacity-10 text-dark px-3 py-2 rounded-pill fw-bold mb-2">
+            Mijozlarimiz Fikrlari
           </span>
-          <h1 className="display-5 fw-extrabold text-dark">What Our Guests Say</h1>
+          <h1 className="display-5 fw-extrabold text-dark">Mehmonlarimiz Izohlari</h1>
           <p className="text-secondary mx-auto" style={{ maxWidth: '560px' }}>
-            Hear from real customers about our food quality, fast delivery, and dining experience.
+            Restoranimiz taomlari, xizmat ko‘rsatish sifati va yetkazib berish haqida mehmonlarimiz fikrlari.
           </p>
         </div>
 
         {loading ? (
-          <Loading text="Loading testimonials..." />
+          <Loading text="Sharhlar yuklanmoqda..." />
         ) : error ? (
           <ErrorMessage message={error} />
         ) : (
@@ -89,44 +88,45 @@ const TestimonialPage = () => {
 
         {/* Submit Review Card */}
         <div className="card border-0 rounded-4 shadow-sm bg-white p-4 p-md-5 mx-auto mt-5" style={{ maxWidth: '640px' }}>
-          <h4 className="fw-bold text-dark mb-3 text-center">Share Your Dining Experience</h4>
+          <h4 className="fw-bold text-dark mb-3 text-center">Sharhingizni Qoldiring</h4>
           {successMsg && <div className="alert alert-success rounded-3">{successMsg}</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label fw-semibold">Your Name</label>
+              <label className="form-label fw-semibold">Ismingiz</label>
               <input
                 type="text"
                 className="form-control rounded-3"
                 required
+                placeholder="Ismingizni kiriting"
                 value={form.customerName}
                 onChange={(e) => setForm({ ...form, customerName: e.target.value })}
               />
             </div>
             <div className="mb-3">
-              <label className="form-label fw-semibold">Rating (1 - 5 Stars)</label>
+              <label className="form-label fw-semibold">Baho Berish (1 - 5 Yulduz)</label>
               <select
                 className="form-select rounded-3"
                 value={form.rating}
                 onChange={(e) => setForm({ ...form, rating: Number(e.target.value) })}
               >
-                <option value={5}>★★★★★ (5 Stars - Outstanding)</option>
-                <option value={4}>★★★★☆ (4 Stars - Very Good)</option>
-                <option value={3}>★★★☆☆ (3 Stars - Good)</option>
+                <option value={5}>★★★★★ (5 Yulduz - A’lo)</option>
+                <option value={4}>★★★★☆ (4 Yulduz - Juda Yaxshi)</option>
+                <option value={3}>★★★☆☆ (3 Yulduz - Yaxshi)</option>
               </select>
             </div>
             <div className="mb-4">
-              <label className="form-label fw-semibold">Your Review</label>
+              <label className="form-label fw-semibold">Sharhingiz Matni</label>
               <textarea
                 className="form-control rounded-3"
                 rows="4"
                 required
-                placeholder="Write your feedback..."
+                placeholder="Fikr va takliflaringizni yozing..."
                 value={form.reviewText}
                 onChange={(e) => setForm({ ...form, reviewText: e.target.value })}
               ></textarea>
             </div>
             <button type="submit" disabled={submitting} className="btn btn-primary-custom w-100 py-3 rounded-pill fw-bold">
-              {submitting ? 'Submitting...' : 'Submit Review'}
+              {submitting ? 'Yuborilmoqda...' : 'Sharhni Yuborish'}
             </button>
           </form>
         </div>

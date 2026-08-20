@@ -19,10 +19,15 @@ const CustomerLogin = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
-      navigate('/account');
+      const res = await login(email, password);
+      const userObj = res.data?.data || res.data;
+      if (userObj?.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
-      setError(err.message || 'Invalid email or password.');
+      setError(err.message || 'Email yoki parol noto‘g‘ri kiritildi.');
     } finally {
       setLoading(false);
     }
@@ -33,9 +38,9 @@ const CustomerLogin = () => {
       <div className="container">
         <div className="card border-0 rounded-4 shadow-lg bg-white overflow-hidden mx-auto" style={{ maxWidth: '440px' }}>
           <div className="bg-dark p-4 text-center text-white">
-            <span className="bg-warning text-dark p-2 rounded-circle fs-5 d-inline-block mb-2">🍔</span>
-            <h3 className="fw-extrabold font-heading mb-1 text-white">Customer Login</h3>
-            <p className="small text-secondary mb-0">Sign in to track your orders and saved addresses.</p>
+            <span className="bg-warning text-dark p-2 rounded-circle fs-5 d-inline-block mb-2">🌙</span>
+            <h3 className="fw-extrabold font-heading mb-1 text-white">Tizimga Kirish</h3>
+            <p className="small text-secondary mb-0">Buyurtmalar va saqlangan manzillar bo‘limiga kirish.</p>
           </div>
 
           <div className="card-body p-4 p-md-5">
@@ -43,7 +48,7 @@ const CustomerLogin = () => {
 
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="form-label fw-semibold">Email Address</label>
+                <label className="form-label fw-semibold">Email Manzil</label>
                 <div className="input-group">
                   <span className="input-group-text bg-light border-end-0 rounded-start-3">
                     <Mail size={18} className="text-muted" />
@@ -51,7 +56,7 @@ const CustomerLogin = () => {
                   <input
                     type="email"
                     className="form-control bg-light border-start-0 rounded-end-3 py-2"
-                    placeholder="customer@example.com"
+                    placeholder="email@example.com"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -61,9 +66,9 @@ const CustomerLogin = () => {
 
               <div className="mb-3">
                 <div className="d-flex justify-content-between align-items-center mb-1">
-                  <label className="form-label fw-semibold mb-0">Password</label>
+                  <label className="form-label fw-semibold mb-0">Parol</label>
                   <Link to="/forgot-password" className="text-warning small fw-bold text-decoration-none">
-                    Forgot Password?
+                    Parolni unutdingizmi?
                   </Link>
                 </div>
                 <div className="input-group">
@@ -82,14 +87,14 @@ const CustomerLogin = () => {
               </div>
 
               <button type="submit" disabled={loading} className="btn btn-primary-custom w-100 py-3 rounded-pill fw-bold fs-6 mt-3">
-                {loading ? 'Authenticating...' : 'Sign In'}
+                {loading ? 'Kirilmoqda...' : 'Kirish'}
               </button>
             </form>
 
             <div className="text-center mt-4 border-top pt-3">
-              <span className="text-muted small">Don't have an account yet? </span>
+              <span className="text-muted small">Hali akkauntingiz yo‘qmi? </span>
               <Link to="/register" className="text-warning fw-bold text-decoration-none small">
-                Create Account
+                Ro‘yxatdan o‘tish
               </Link>
             </div>
           </div>

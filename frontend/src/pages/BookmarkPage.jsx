@@ -22,7 +22,7 @@ const BookmarkPage = () => {
           setBookmarks(res.data);
         }
       } catch (err) {
-        setError(err.message || 'Failed to load saved bookmarks.');
+        setError(err.message || 'Saqlangan taomlarni yuklashda xatolik.');
       } finally {
         setLoading(false);
       }
@@ -35,20 +35,20 @@ const BookmarkPage = () => {
       <div className="container">
         <div className="mb-4">
           <h1 className="fw-extrabold text-dark mb-1 d-flex align-items-center gap-2">
-            <Heart size={32} className="text-danger fill-danger" /> Saved Dishes (Bookmarks)
+            <Heart size={32} className="text-danger fill-danger" /> Tanlangan Taomlar
           </h1>
-          <p className="text-secondary">Quick access to your favorite bookmarked restaurant items.</p>
+          <p className="text-secondary">O‘zingiz yoqtirgan sevimli taomlaringizga tezkor kirish.</p>
         </div>
 
         {loading ? (
-          <Loading text="Loading bookmarked items..." />
+          <Loading text="Tanlangan taomlar yuklanmoqda..." />
         ) : error ? (
           <ErrorMessage message={error} />
         ) : bookmarks.length === 0 ? (
           <EmptyState
-            title="No Bookmarks Saved"
-            description="You haven't saved any food items to your bookmarks yet."
-            actionText="Explore Menu"
+            title="Saqlangan Taomlar Yo‘q"
+            description="Siz hali hech qanday taomni tanlanganlarga saqlamadingiz."
+            actionText="Menyuni Ko‘rish"
             actionLink="/menu"
           />
         ) : (

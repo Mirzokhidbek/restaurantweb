@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Mail, Lock, Phone, ArrowRight, CheckCircle2 } from 'lucide-react';
-import authService from '../services/authService';
+import { User, Mail, Lock, Phone, ArrowRight } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import ErrorMessage from '../components/ErrorMessage';
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -16,12 +17,12 @@ const Register = () => {
     setError(null);
 
     try {
-      const res = await authService.register(formData.name, formData.email, formData.password, formData.phone);
-      if (res.success) {
-        navigate('/account');
+      const res = await register(formData.name, formData.email, formData.password, formData.phone);
+      if (res.success || res.data) {
+        navigate('/');
       }
     } catch (err) {
-      setError(err.message || 'Registration failed.');
+      setError(err.message || 'Ro‘yxatdan o‘tishda xatolik yuz berdi.');
     } finally {
       setLoading(false);
     }
@@ -32,9 +33,9 @@ const Register = () => {
       <div className="container">
         <div className="card border-0 rounded-4 shadow-lg bg-white overflow-hidden mx-auto" style={{ maxWidth: '480px' }}>
           <div className="bg-dark p-4 text-center text-white">
-            <span className="bg-warning text-dark p-2 rounded-circle fs-5 d-inline-block mb-2">🍔</span>
-            <h3 className="fw-extrabold font-heading mb-1 text-white">Join SavoryBites</h3>
-            <p className="small text-secondary mb-0">Create an account for 1-click orders and rewards.</p>
+            <span className="bg-warning text-dark p-2 rounded-circle fs-5 d-inline-block mb-2">🌙</span>
+            <h3 className="fw-extrabold font-heading mb-1 text-white">Ro‘yxatdan O‘tish</h3>
+            <p className="small text-secondary mb-0">FAZO Restorani tizimida yangi akkaunt yaratish.</p>
           </div>
 
           <div className="card-body p-4 p-md-5">
@@ -42,7 +43,7 @@ const Register = () => {
 
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="form-label fw-semibold">Full Name</label>
+                <label className="form-label fw-semibold">Ism va Familiya</label>
                 <div className="input-group">
                   <span className="input-group-text bg-light border-end-0 rounded-start-3">
                     <User size={18} className="text-muted" />
@@ -50,7 +51,7 @@ const Register = () => {
                   <input
                     type="text"
                     className="form-control bg-light border-start-0 rounded-end-3 py-2"
-                    placeholder="John Doe"
+                    placeholder="Masalan: Anvar Alimov"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -59,7 +60,7 @@ const Register = () => {
               </div>
 
               <div className="mb-3">
-                <label className="form-label fw-semibold">Email Address</label>
+                <label className="form-label fw-semibold">Email Manzil</label>
                 <div className="input-group">
                   <span className="input-group-text bg-light border-end-0 rounded-start-3">
                     <Mail size={18} className="text-muted" />
@@ -67,7 +68,7 @@ const Register = () => {
                   <input
                     type="email"
                     className="form-control bg-light border-start-0 rounded-end-3 py-2"
-                    placeholder="john@example.com"
+                    placeholder="anvar@example.com"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -76,7 +77,7 @@ const Register = () => {
               </div>
 
               <div className="mb-3">
-                <label className="form-label fw-semibold">Phone Number</label>
+                <label className="form-label fw-semibold">Telefon Raqam</label>
                 <div className="input-group">
                   <span className="input-group-text bg-light border-end-0 rounded-start-3">
                     <Phone size={18} className="text-muted" />
@@ -84,7 +85,7 @@ const Register = () => {
                   <input
                     type="tel"
                     className="form-control bg-light border-start-0 rounded-end-3 py-2"
-                    placeholder="+1 (555) 000-1234"
+                    placeholder="+998 90 123 45 67"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
@@ -92,7 +93,7 @@ const Register = () => {
               </div>
 
               <div className="mb-4">
-                <label className="form-label fw-semibold">Password</label>
+                <label className="form-label fw-semibold">Parol</label>
                 <div className="input-group">
                   <span className="input-group-text bg-light border-end-0 rounded-start-3">
                     <Lock size={18} className="text-muted" />
@@ -109,14 +110,14 @@ const Register = () => {
               </div>
 
               <button type="submit" disabled={loading} className="btn btn-primary-custom w-100 py-3 rounded-pill fw-bold fs-6">
-                {loading ? 'Creating Account...' : 'Register Account'}
+                {loading ? 'Yaratilmoqda...' : 'Ro‘yxatdan O‘tish'}
               </button>
             </form>
 
             <div className="text-center mt-4 border-top pt-3">
-              <span className="text-muted small">Already have an account? </span>
+              <span className="text-muted small">Avval ro‘yxatdan o‘tganmisiz? </span>
               <Link to="/login" className="text-warning fw-bold text-decoration-none small">
-                Sign In Here
+                Tizimga kirish
               </Link>
             </div>
           </div>

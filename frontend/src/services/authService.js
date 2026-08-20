@@ -3,18 +3,20 @@ import api from './api';
 const authService = {
   login: async (email, password) => {
     const response = await api.post('/auth/login', { email, password });
-    if (response.data && response.data.token) {
-      localStorage.setItem('adminToken', response.data.token);
-      localStorage.setItem('adminUser', JSON.stringify(response.data));
+    const userData = response.data?.data || response.data;
+    if (userData && userData.token) {
+      localStorage.setItem('adminToken', userData.token);
+      localStorage.setItem('adminUser', JSON.stringify(userData));
     }
     return response;
   },
 
   register: async (name, email, password, phone) => {
     const response = await api.post('/auth/register', { name, email, password, phone });
-    if (response.data && response.data.token) {
-      localStorage.setItem('adminToken', response.data.token);
-      localStorage.setItem('adminUser', JSON.stringify(response.data));
+    const userData = response.data?.data || response.data;
+    if (userData && userData.token) {
+      localStorage.setItem('adminToken', userData.token);
+      localStorage.setItem('adminUser', JSON.stringify(userData));
     }
     return response;
   },
@@ -24,7 +26,14 @@ const authService = {
   },
 
   updateProfile: async (profileData) => {
-    return await api.put('/auth/profile', profileData);
+    const response = await api.put('/auth/profile', profileData);
+    const userData = response.data?.data || response.data;
+    if (userData) {
+      const currentUser = authService.getCurrentUser() || {};
+      const updatedUser = { ...currentUser, ...userData };
+      localStorage.setItem('adminUser', JSON.stringify(updatedUser));
+    }
+    return response;
   },
 
   addAddress: async (addressData) => {

@@ -11,7 +11,7 @@ const Hero = () => {
       className="position-relative py-5 overflow-hidden"
       style={{
         background: 'linear-gradient(135deg, #ffffff 0%, #fffbe6 50%, #fff7ed 100%)',
-        minHeight: '600px',
+        minHeight: '620px',
       }}
     >
       {/* Ambient Radial Golden Aura Blobs */}
@@ -83,38 +83,71 @@ const Hero = () => {
 
             {/* Micro Highlights Bar inside Lighter Bright Cards */}
             <div className="animate-fade-up-4 row g-3 pt-3 border-top border-warning border-opacity-20">
-              <div className="col-4">
-                <div className="p-3 rounded-4 bg-white border border-warning border-opacity-20 shadow-sm d-flex align-items-center gap-2">
-                  <div className="p-2 rounded-circle bg-warning bg-opacity-15 text-warning flex-shrink-0">
-                    <Clock size={18} />
+              <div className="col-12 col-sm-4">
+                <div
+                  className="p-3 rounded-4 bg-white border border-warning border-opacity-30 shadow-sm d-flex align-items-center gap-3 hover-lift"
+                  style={{ transition: 'all 0.3s ease' }}
+                >
+                  <div
+                    className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 text-white shadow-sm"
+                    style={{
+                      width: '42px',
+                      height: '42px',
+                      background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                      boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
+                    }}
+                  >
+                    <Clock size={20} />
                   </div>
                   <div>
-                    <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '0.88rem' }}>{t('fastDelivery30')}</h6>
-                    <small className="text-muted" style={{ fontSize: '0.72rem' }}>{t('fastDeliveryDesc')}</small>
+                    <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '0.9rem' }}>{t('fastDelivery30')}</h6>
+                    <small className="text-muted" style={{ fontSize: '0.75rem' }}>{t('fastDeliveryDesc')}</small>
                   </div>
                 </div>
               </div>
 
-              <div className="col-4">
-                <div className="p-3 rounded-4 bg-white border border-warning border-opacity-20 shadow-sm d-flex align-items-center gap-2">
-                  <div className="p-2 rounded-circle bg-warning bg-opacity-15 text-warning flex-shrink-0">
-                    <Award size={18} />
+              <div className="col-12 col-sm-4">
+                <div
+                  className="p-3 rounded-4 bg-white border border-warning border-opacity-30 shadow-sm d-flex align-items-center gap-3 hover-lift"
+                  style={{ transition: 'all 0.3s ease' }}
+                >
+                  <div
+                    className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 text-white shadow-sm"
+                    style={{
+                      width: '42px',
+                      height: '42px',
+                      background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                      boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
+                    }}
+                  >
+                    <Award size={20} />
                   </div>
                   <div>
-                    <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '0.88rem' }}>{t('premiumQuality')}</h6>
-                    <small className="text-muted" style={{ fontSize: '0.72rem' }}>{t('qualityDesc')}</small>
+                    <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '0.9rem' }}>{t('premiumQuality')}</h6>
+                    <small className="text-muted" style={{ fontSize: '0.75rem' }}>{t('qualityDesc')}</small>
                   </div>
                 </div>
               </div>
 
-              <div className="col-4">
-                <div className="p-3 rounded-4 bg-white border border-warning border-opacity-20 shadow-sm d-flex align-items-center gap-2">
-                  <div className="p-2 rounded-circle bg-warning bg-opacity-15 text-warning flex-shrink-0">
-                    <ShieldCheck size={18} />
+              <div className="col-12 col-sm-4">
+                <div
+                  className="p-3 rounded-4 bg-white border border-warning border-opacity-30 shadow-sm d-flex align-items-center gap-3 hover-lift"
+                  style={{ transition: 'all 0.3s ease' }}
+                >
+                  <div
+                    className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 text-white shadow-sm"
+                    style={{
+                      width: '42px',
+                      height: '42px',
+                      background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                      boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
+                    }}
+                  >
+                    <ShieldCheck size={20} />
                   </div>
                   <div>
-                    <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '0.88rem' }}>{t('topRating')}</h6>
-                    <small className="text-muted" style={{ fontSize: '0.72rem' }}>{t('topRatingDesc')}</small>
+                    <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '0.9rem' }}>{t('topRating')}</h6>
+                    <small className="text-muted" style={{ fontSize: '0.75rem' }}>{t('topRatingDesc')}</small>
                   </div>
                 </div>
               </div>
@@ -133,10 +166,10 @@ const Hero = () => {
                 }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=1000&q=80"
-                  alt="FAZO Restorani Namangan Oshi"
+                  src="/assets/fazo_hero_banner.jpg"
+                  alt="FAZO Restorani Namangan Milliy va Turk Oshxonasi"
                   className="img-fluid w-100 object-fit-cover"
-                  style={{ height: '490px' }}
+                  style={{ height: '510px' }}
                 />
                 <div className="position-absolute bottom-0 start-0 w-100 p-4 bg-gradient-to-t" style={{ background: 'linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, transparent 100%)' }}>
                   <span className="badge bg-warning text-dark rounded-pill px-3 py-2 fw-bold text-uppercase" style={{ fontSize: '0.75rem' }}>
@@ -145,20 +178,20 @@ const Hero = () => {
                 </div>
               </div>
 
-              {/* Floating Chef Badge Card */}
+              {/* Floating Chef Badge Card (Clean position without overlap) */}
               <div
-                className="position-absolute bottom-0 start-0 translate-middle-x mb-4 ms-5 bg-white p-3 rounded-4 shadow-lg border border-warning border-opacity-30 d-none d-md-flex align-items-center gap-3 animate-badge-float"
-                style={{ maxWidth: '310px', backdropFilter: 'blur(12px)', zIndex: 3 }}
+                className="position-absolute bottom-0 start-0 mb-4 ms-4 bg-white p-3 rounded-4 shadow-lg border border-warning border-opacity-30 d-none d-md-flex align-items-center gap-3 animate-badge-float"
+                style={{ maxWidth: '300px', backdropFilter: 'blur(14px)', zIndex: 3 }}
               >
                 <img
                   src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=150&q=80"
                   alt="Bosh Oshpaz Ahmadjon Yoqubov"
                   className="rounded-circle object-fit-cover border border-2 border-warning"
-                  style={{ width: '54px', height: '54px' }}
+                  style={{ width: '52px', height: '52px' }}
                 />
                 <div>
                   <div className="d-flex align-items-center gap-1">
-                    <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '0.9rem' }}>{t('chefChoice')}</h6>
+                    <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '0.88rem' }}>{t('chefChoice')}</h6>
                     <Sparkles size={14} className="text-warning fill-warning" />
                   </div>
                   <small className="text-warning fw-bold d-block mt-1">★★★★★ ({t('chefChoiceOrders')})</small>
@@ -167,7 +200,7 @@ const Hero = () => {
 
               {/* Floating Delivery Time Pill on Top Right */}
               <div
-                className="position-absolute top-0 end-0 translate-middle-y me-4 mt-4 bg-white text-dark px-3 py-2 rounded-pill shadow-lg border border-warning border-opacity-30 d-flex align-items-center gap-2"
+                className="position-absolute top-0 end-0 me-4 mt-4 bg-white text-dark px-3 py-2 rounded-pill shadow-lg border border-warning border-opacity-30 d-flex align-items-center gap-2"
                 style={{ backdropFilter: 'blur(14px)', zIndex: 3 }}
               >
                 <Flame size={18} className="text-warning animate-flame-bounce" />

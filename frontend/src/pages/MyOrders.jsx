@@ -5,7 +5,6 @@ import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import { useLanguage } from '../context/LanguageContext';
 import { formatCurrency } from '../utils/formatCurrency';
-import { ShoppingBag, Clock, MapPin } from 'lucide-react';
 
 const MyOrders = () => {
   const { t } = useLanguage();
@@ -22,13 +21,25 @@ const MyOrders = () => {
           setOrders(res.data);
         }
       } catch (err) {
-        setError(err.message || 'Failed to fetch your orders.');
+        setError(err.message || 'Buyurtmalaringizni yuklashda xatolik.');
       } finally {
         setLoading(false);
       }
     };
     fetchOrders();
   }, []);
+
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 'pending': return 'Kutilmoqda';
+      case 'confirmed': return 'Tasdiqlandi';
+      case 'preparing': return 'Tayyorlanmoqda';
+      case 'ready': return 'Yetkazishga Tayyor';
+      case 'completed': return 'Bajarildi';
+      case 'cancelled': return 'Bekor Qilindi';
+      default: return status;
+    }
+  };
 
   const getStatusBadgeClass = (status) => {
     switch (status) {
@@ -68,16 +79,16 @@ const MyOrders = () => {
                 <div className="card border-0 rounded-4 shadow-sm bg-white p-4">
                   <div className="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
                     <div>
-                      <span className="text-muted small d-block">{t('orderRef')}</span>
+                      <span className="text-muted small d-block">Buyurtma Raqami</span>
                       <span className="fw-extrabold text-dark font-monospace">#{ord._id}</span>
                     </div>
                     <span className={`badge rounded-pill px-3 py-2 text-uppercase ${getStatusBadgeClass(ord.status)}`}>
-                      {ord.status}
+                      {getStatusLabel(ord.status)}
                     </span>
                   </div>
 
                   <div className="mb-3">
-                    <span className="text-muted small d-block mb-1">Items:</span>
+                    <span className="text-muted small d-block mb-1">Taomlar Ro‘yxati:</span>
                     {ord.items.map((item, idx) => (
                       <div key={idx} className="d-flex justify-content-between small text-dark mb-1">
                         <span>{item.name} × {item.quantity}</span>
@@ -91,7 +102,7 @@ const MyOrders = () => {
                       <small className="text-muted d-block">{new Date(ord.createdAt).toLocaleDateString()}</small>
                     </div>
                     <span className="fs-5 fw-extrabold text-primary">
-                      {t('totalPrice')}: {formatCurrency(ord.totalPrice)}
+                      Jami: {formatCurrency(ord.totalPrice)}
                     </span>
                   </div>
                 </div>

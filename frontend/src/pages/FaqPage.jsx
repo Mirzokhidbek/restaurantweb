@@ -19,7 +19,7 @@ const FaqPage = () => {
           setFaqs(res.data);
         }
       } catch (err) {
-        setError(err.message || 'Failed to load FAQ items.');
+        setError(err.message || 'Savol-javoblarni yuklashda xatolik yuz berdi.');
       } finally {
         setLoading(false);
       }
@@ -31,17 +31,17 @@ const FaqPage = () => {
     <div className="faq-page py-5 bg-light min-vh-100">
       <div className="container">
         <div className="text-center mb-5">
-          <span className="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill fw-bold mb-2">
-            Got Questions?
+          <span className="badge bg-warning bg-opacity-10 text-dark px-3 py-2 rounded-pill fw-bold mb-2">
+            Savolingiz Bormi?
           </span>
-          <h1 className="display-5 fw-extrabold text-dark">Frequently Asked Questions</h1>
+          <h1 className="display-5 fw-extrabold text-dark">Tez-Tez Beriladigan Savollar</h1>
           <p className="text-secondary mx-auto" style={{ maxWidth: '560px' }}>
-            Everything you need to know about our ordering process, food delivery, and restaurant policies.
+            Buyurtma berish, yetkazib berish va restoran qoidalari bo‘yicha eng ko‘p beriladigan savollarga javoblar.
           </p>
         </div>
 
         {loading ? (
-          <Loading text="Loading FAQs..." />
+          <Loading text="Savol-javoblar yuklanmoqda..." />
         ) : error ? (
           <ErrorMessage message={error} />
         ) : (
@@ -58,14 +58,11 @@ const FaqPage = () => {
                   </span>
                   <ChevronDown
                     size={20}
-                    className={`text-muted transition-transform flex-shrink-0 ${
-                      openIndex === idx ? 'rotate-180 text-warning' : ''
-                    }`}
-                    style={{ transform: openIndex === idx ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s ease' }}
+                    className={`text-muted transition-transform ${openIndex === idx ? 'rotate-180' : ''}`}
                   />
                 </button>
                 {openIndex === idx && (
-                  <div className="px-4 pb-4 border-top pt-3 text-secondary" style={{ lineHeight: '1.8' }}>
+                  <div className="p-4 pt-0 text-secondary border-top border-light" style={{ lineHeight: '1.8' }}>
                     {faq.answer}
                   </div>
                 )}

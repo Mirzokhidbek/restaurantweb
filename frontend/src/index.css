@@ -400,3 +400,27 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     transform: translateY(-3px) scale(1.15);
   }
 }
+
+/* Gallery Slideshow Auto-Zoom & Progress Bar */
+@keyframes kenburnsZoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+.gallery-auto-zoom {
+  animation: kenburnsZoom 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes progressSlide {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.gallery-timer-progress {
+  animation: progressSlide 4.5s linear infinite;
+}
+

@@ -10,9 +10,11 @@ import FAQ from '../models/FAQ.js';
 
 dotenv.config();
 
-const seedData = async () => {
+export const seedData = async (skipConnection = false) => {
   try {
-    await connectDB();
+    if (!skipConnection) {
+      await connectDB();
+    }
 
     console.log('Clearing database collections for FAZO Restorani Namangan...');
     await User.deleteMany({});
@@ -50,7 +52,6 @@ const seedData = async () => {
       ],
     });
     await sampleCustomer.save();
-    console.log('Admin & Customer accounts created.');
 
     console.log('Seeding FAZO Restorani Categories...');
     const categoriesData = [
@@ -317,11 +318,17 @@ const seedData = async () => {
     await FAQ.insertMany(faqsData);
 
     console.log('FAZO Restorani Namangan complete database seeded successfully!');
-    process.exit(0);
+    if (!skipConnection && process.argv[1] && process.argv[1].includes('seed.js')) {
+      process.exit(0);
+    }
   } catch (error) {
     console.error(`Error seeding database: ${error.message}`);
-    process.exit(1);
+    if (!skipConnection && process.argv[1] && process.argv[1].includes('seed.js')) {
+      process.exit(1);
+    }
   }
 };
 
-seedData();
+if (process.argv[1] && process.argv[1].includes('seed.js')) {
+  seedData(false);
+}

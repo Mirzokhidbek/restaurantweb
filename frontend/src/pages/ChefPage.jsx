@@ -18,7 +18,7 @@ const ChefPage = () => {
           setChefs(res.data);
         }
       } catch (err) {
-        setError(err.message || 'Failed to load chefs.');
+        setError(err.message || 'Oshpazlar ro‘yxatini yuklashda xatolik.');
       } finally {
         setLoading(false);
       }
@@ -30,17 +30,17 @@ const ChefPage = () => {
     <div className="chef-page py-5 bg-light min-vh-100">
       <div className="container">
         <div className="text-center mb-5">
-          <span className="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill fw-bold mb-2">
-            Meet Our Masters
+          <span className="badge bg-warning bg-opacity-10 text-dark px-3 py-2 rounded-pill fw-bold mb-2">
+            Mahoratli Oshpazlarimiz
           </span>
-          <h1 className="display-5 fw-extrabold text-dark">Our Executive Chefs</h1>
+          <h1 className="display-5 fw-extrabold text-dark">Bosh Oshpazlar</h1>
           <p className="text-secondary mx-auto" style={{ maxWidth: '580px' }}>
-            Passionate culinary leaders dedicated to creating extraordinary dining experiences.
+            Tajribali va mahoratli oshpazlarimiz tomonidan tayyorlanadigan masalliqli shirin taomlar.
           </p>
         </div>
 
         {loading ? (
-          <Loading text="Loading master chefs..." />
+          <Loading text="Oshpazlar yuklanmoqda..." />
         ) : error ? (
           <ErrorMessage message={error} />
         ) : (

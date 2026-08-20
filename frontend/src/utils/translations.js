@@ -41,6 +41,10 @@ export const translations = {
     chefChoice: 'Bosh Oshpaz Tavsiyasi',
     chefChoiceOrders: '3,200+ Buyurtma',
 
+    categoriesBadge: 'Saralangan Taomlar Kategoriyasi',
+    categoriesTitle: 'Bizning Boy Oshxona Menyusi',
+    categoriesDesc: 'Namangan to‘y oshi, ko‘mir cho‘g‘ida pishirilgan shashliklar, Turk Adana kaboblari, pishiriqlar va muzdek ichimliklar.',
+
     // Food Cards & Modals
     popularBadge: 'Mashhur 🔥',
     inStock: '● Sotuvda Mavjud',

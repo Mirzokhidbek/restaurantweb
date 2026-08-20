@@ -19,10 +19,10 @@ const ForgotPassword = () => {
     try {
       const res = await authService.forgotPassword(email);
       if (res.success) {
-        setSuccess(res.message);
+        setSuccess('Parolni tiklash yo‘riqnomasi sizning email manzilingizga yuborildi!');
       }
     } catch (err) {
-      setError(err.message || 'Failed to process password reset request.');
+      setError(err.message || 'Parolni tiklash so‘rovida xatolik yuz berdi.');
     } finally {
       setLoading(false);
     }
@@ -33,8 +33,8 @@ const ForgotPassword = () => {
       <div className="container">
         <div className="card border-0 rounded-4 shadow-lg bg-white overflow-hidden mx-auto" style={{ maxWidth: '440px' }}>
           <div className="bg-dark p-4 text-center text-white">
-            <h3 className="fw-extrabold font-heading mb-1 text-white">Forgot Password</h3>
-            <p className="small text-secondary mb-0">Enter your email to receive password reset instructions.</p>
+            <h3 className="fw-extrabold font-heading mb-1 text-white">Parolni Tiklash</h3>
+            <p className="small text-secondary mb-0">Email manzilingizni kiriting, tiklash yo‘riqnomasini yuboramiz.</p>
           </div>
 
           <div className="card-body p-4 p-md-5">
@@ -49,7 +49,7 @@ const ForgotPassword = () => {
             {!success ? (
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                  <label className="form-label fw-semibold">Your Email Address</label>
+                  <label className="form-label fw-semibold">Email Manzilingiz</label>
                   <div className="input-group">
                     <span className="input-group-text bg-light border-end-0 rounded-start-3">
                       <Mail size={18} className="text-muted" />
@@ -57,7 +57,7 @@ const ForgotPassword = () => {
                     <input
                       type="email"
                       className="form-control bg-light border-start-0 rounded-end-3 py-2"
-                      placeholder="customer@example.com"
+                      placeholder="email@example.com"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -66,20 +66,20 @@ const ForgotPassword = () => {
                 </div>
 
                 <button type="submit" disabled={loading} className="btn btn-primary-custom w-100 py-3 rounded-pill fw-bold fs-6">
-                  {loading ? 'Sending Link...' : 'Send Reset Instructions'}
+                  {loading ? 'Yuborilmoqda...' : 'Tiklash Havolasini Yuborish'}
                 </button>
               </form>
             ) : (
               <div className="text-center pt-2">
                 <Link to="/login" className="btn btn-primary-custom w-100 py-3 rounded-pill fw-bold">
-                  Back to Sign In
+                  Tizimga Kirishga Qaytish
                 </Link>
               </div>
             )}
 
             <div className="text-center mt-4 border-top pt-3">
               <Link to="/login" className="text-muted text-decoration-none small d-inline-flex align-items-center gap-1">
-                <ArrowLeft size={14} /> Back to Login
+                <ArrowLeft size={14} /> Tizimga kirish sahifasiga qaytish
               </Link>
             </div>
           </div>

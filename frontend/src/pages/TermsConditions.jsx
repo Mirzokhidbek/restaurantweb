@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, ShieldCheck } from 'lucide-react';
+import { FileText } from 'lucide-react';
 
 const TermsConditions = () => {
   return (
@@ -7,29 +7,29 @@ const TermsConditions = () => {
       <div className="container">
         <div className="card border-0 rounded-4 shadow-sm bg-white p-4 p-md-5 mx-auto" style={{ maxWidth: '800px' }}>
           <div className="d-flex align-items-center gap-2 mb-3 text-warning fw-bold">
-            <FileText size={24} /> Legal Documentation
+            <FileText size={24} /> Restoran Qoidalari
           </div>
-          <h1 className="fw-extrabold text-dark mb-4">Terms & Conditions</h1>
-          <small className="text-muted d-block mb-4">Last Updated: August 2026</small>
+          <h1 className="fw-extrabold text-dark mb-4">Qoidalar va Shartlar</h1>
+          <small className="text-muted d-block mb-4">Oxirgi Yangilanish: Avgust 2026</small>
 
-          <h5 className="fw-bold text-dark mt-3">1. Ordering & Delivery Policy</h5>
+          <h5 className="fw-bold text-dark mt-3">1. Buyurtma va Yetkazib Berish Qoidasi</h5>
           <p className="text-secondary" style={{ lineHeight: '1.8' }}>
-            By placing an order on SavoryBites, you confirm that all delivery details provided are accurate. Delivery times are estimates and may vary slightly depending on weather and road conditions.
+            FAZO Restorani veb-saytida buyurtma berish orqali kiritilgan yetkazish manzili va telefon raqami to‘g‘riligini tasdiqlaysiz. Yetkazish vaqti ob-havo va yo‘l holatiga qarab o‘rtacha 25-35 daqiqani tashkil qiladi.
           </p>
 
-          <h5 className="fw-bold text-dark mt-4">2. Food Safety & Allergen Notice</h5>
+          <h5 className="fw-bold text-dark mt-4">2. Taomlar Sifati va Xavfsizlik</h5>
           <p className="text-secondary" style={{ lineHeight: '1.8' }}>
-            While we take strict precautions against cross-contamination, our dishes are prepared in kitchens that handle nuts, dairy, gluten, and seafood. Customers with severe allergies must specify instructions during checkout.
+            Restoranimizda barcha taomlar yangi va sifatli masalliqlardan, pokiza oshxonada tayyorlanadi. Mahsus allergiyasi bor mijozlarimiz buyurtma berishda izoh qoldirishlari so‘raladi.
           </p>
 
-          <h5 className="fw-bold text-dark mt-4">3. Payment & Refund Policy</h5>
+          <h5 className="fw-bold text-dark mt-4">3. To‘lov va Qaytarish Siyosati</h5>
           <p className="text-secondary" style={{ lineHeight: '1.8' }}>
-            Payments are accepted via Cash on Delivery or credit/debit cards. Refunds or replacements are issued for damaged or missing items reported within 30 minutes of receipt.
+            To‘lovlar Naqd pul ko‘rinishida yoki yetkazib berilganda onlayn qabul qilinadi. Taom sifatidan norozilik bo‘lsa, 30 daqiqa ichida almashtirib beriladi.
           </p>
 
-          <h5 className="fw-bold text-dark mt-4">4. Privacy & Data Security</h5>
+          <h5 className="fw-bold text-dark mt-4">4. Maxfiylik va Ma’lumotlar Himoyasi</h5>
           <p className="text-secondary" style={{ lineHeight: '1.8' }}>
-            We do not share customer contact details or delivery addresses with third parties outside of delivery processing.
+            Foydalanuvchilarning telefon raqamlari va manzillari uchinchi shaxslarga berilmaydi hamda faqat yetkazib berish xizmati uchun ishlatiladi.
           </p>
         </div>
       </div>
