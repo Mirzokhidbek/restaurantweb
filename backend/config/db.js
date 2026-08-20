@@ -5,16 +5,16 @@ let mongoMemoryServer = null;
 
 const connectDB = async () => {
   try {
-    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/myresto';
+    const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/myresto';
     mongoose.set('strictQuery', false);
     
     try {
       const conn = await mongoose.connect(mongoUri, {
-        serverSelectionTimeoutMS: 5000,
+        serverSelectionTimeoutMS: 4000,
       });
-      console.log(`MongoDB Atlas Connected: ${conn.connection.host}`);
+      console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (err) {
-      console.log(`Primary MongoDB connection error (${err.message}). Starting fallback MongoMemoryServer...`);
+      console.log(`Local MongoDB 127.0.0.1 connection fallback (${err.message}). Starting MongoMemoryServer...`);
       mongoMemoryServer = await MongoMemoryServer.create();
       const memoryUri = mongoMemoryServer.getUri();
       const conn = await mongoose.connect(memoryUri);
