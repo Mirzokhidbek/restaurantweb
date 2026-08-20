@@ -73,7 +73,7 @@ const Menu = () => {
         {/* Page Title */}
         <div className="text-center mb-5">
           <span className="badge bg-warning bg-opacity-15 text-dark px-3 py-2 rounded-pill fw-bold mb-2 border border-warning border-opacity-30">
-            FAZO Restorani Namangan • 100% Halol
+            FAZO Restorani Namangan
           </span>
           <h1 className="display-5 fw-extrabold text-dark font-heading">{t('menuHeading')}</h1>
           <p className="text-secondary mx-auto" style={{ maxWidth: '560px' }}>

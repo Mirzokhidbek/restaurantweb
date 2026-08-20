@@ -101,8 +101,8 @@ const Hero = () => {
                     <Award size={18} />
                   </div>
                   <div>
-                    <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '0.88rem' }}>{t('halolQuality')}</h6>
-                    <small className="text-muted" style={{ fontSize: '0.72rem' }}>{t('halolDesc')}</small>
+                    <h6 className="fw-bold mb-0 text-dark" style={{ fontSize: '0.88rem' }}>{t('premiumQuality')}</h6>
+                    <small className="text-muted" style={{ fontSize: '0.72rem' }}>{t('qualityDesc')}</small>
                   </div>
                 </div>
               </div>

@@ -43,7 +43,7 @@ const About = () => {
               <div className="d-flex flex-column gap-2">
                 <div className="d-flex align-items-center gap-2 text-dark fw-semibold">
                   <CheckCircle2 size={18} className="text-warning" />
-                  <span>100% Halol va Pokiza Masalliqlar</span>
+                  <span>Sifatli va Pokiza Masalliqlar</span>
                 </div>
                 <div className="d-flex align-items-center gap-2 text-dark fw-semibold">
                   <CheckCircle2 size={18} className="text-warning" />

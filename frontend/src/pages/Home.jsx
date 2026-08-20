@@ -118,14 +118,14 @@ const Home = () => {
                 Yangi Masalliqlar. Oshxona Mahorati.
               </h2>
               <p className="text-secondary mb-4" style={{ lineHeight: '1.8' }}>
-                Fazo restorani Namangan shahrida 100% Halol sertifikatlangan yangi masalliqlar, saralangan qo‘y go‘shti va Devzira guruchidan tayyorlangan mazali taomlari bilan mashhur. Har bir taomimizda sharqona mehmondostlik va samimiyat mavjud.
+                Fazo restorani Namangan shahrida sifatli va yangi masalliqlar, saralangan qo‘y go‘shti va Devzira guruchidan tayyorlangan mazali taomlari bilan mashhur. Har bir taomimizda sharqona mehmondostlik va samimiyat mavjud.
               </p>
 
               <div className="row g-3 mb-4">
                 <div className="col-6">
                   <div className="p-3 bg-white rounded-4 border shadow-sm">
                     <ShieldCheck className="text-warning mb-2" size={24} />
-                    <h6 className="fw-bold mb-1 text-dark">100% Halol Kafolat</h6>
+                    <h6 className="fw-bold mb-1 text-dark">Oliy Sifat Kafolati</h6>
                     <small className="text-muted">Pokiza va sertifikatlangan</small>
                   </div>
                 </div>

@@ -26,7 +26,7 @@ export const translations = {
     callHotline: '+998 77 301 00 05',
 
     // Hero Section
-    heroBadge: 'FAZO Restorani Namangan • 100% Halol',
+    heroBadge: 'FAZO Restorani Namangan',
     heroTitleLine1: 'Namanganning Eng',
     heroTitleLine2: 'Fayzli Restorani.',
     heroDesc: 'Afsonaviy Namangan to‘y oshi, ko‘mir cho‘g‘ida pishirilgan Jaz va qiyma shashliklar, Turk Adana kaboblari va pechda pishirilgan Kushbashili Pide.',
@@ -34,8 +34,8 @@ export const translations = {
     orderNowBtn: 'Buyurtma berish',
     fastDelivery30: '30 Daqiqa',
     fastDeliveryDesc: 'Tezkor Delivery',
-    halolQuality: '100% Halol',
-    halolDesc: 'Sertifikatlangan',
+    premiumQuality: 'Yuqori Sifat',
+    qualityDesc: 'A’lo Darajada',
     topRating: 'Top Baho',
     topRatingDesc: '4.98★ Namangan',
     chefChoice: 'Bosh Oshpaz Tavsiyasi',
@@ -53,7 +53,7 @@ export const translations = {
     quickView: 'Tezkor Ko‘rish',
     ratingLabel: '4.9 (120+ sharhlar)',
     prepTime: '15-20 Min Tayyorlash',
-    guaranteeText: '⚡ O‘rtacha 25-Min Yetkazish • 100% Yangi Kafolatlangan',
+    guaranteeText: '⚡ O‘rtacha 25-Min Yetkazish • Yangi Kafolatlangan',
     saveWishlist: 'Saqlash',
 
     // Menu Page & Filter Headers
@@ -166,7 +166,7 @@ export const translations = {
     savedBookmarksDesc: 'Sevimli taomlaringizga tezkor kirish.',
 
     // Footer
-    footerDesc: 'Namanganning eng fayzli va shirin go‘shasi. Milliy to‘y oshi, ko‘mir shashliklari, Turk va Yevropa oshxonasi taomlarini 100% Halol va pokiza tayyorlab yetkazib beramiz.',
+    footerDesc: 'Namanganning eng fayzli va shirin go‘shasi. Milliy to‘y oshi, ko‘mir shashliklari, Turk va Yevropa oshxonasi taomlarini sifatli va pokiza tayyorlab yetkazib beramiz.',
     quickLinks: 'Tezkor Havolalar',
     addressHeader: 'Aloqa va Manzil',
     addressText: 'Namangan sh., 2-mikrorayon, Islom Karimov k., 17-uy (Mo‘ljal: "Buyuk Ipak Yo‘li")',

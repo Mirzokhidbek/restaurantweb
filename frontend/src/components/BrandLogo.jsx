@@ -49,7 +49,7 @@ const BrandLogo = ({ isDark = false, showTagline = true }) => {
             className={`${isDark ? 'text-light text-opacity-75' : 'text-muted'} fw-semibold mt-1`}
             style={{ fontSize: '0.68rem', letterSpacing: '0.5px', textTransform: 'uppercase' }}
           >
-            Restorani • 100% Halol
+            Restorani
           </small>
         )}
       </div>

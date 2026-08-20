@@ -302,8 +302,8 @@ const seedData = async () => {
         orderIndex: 2,
       },
       {
-        question: 'Barcha taomlar Halol sertifikatiga egami?',
-        answer: 'Ha! FAZO restoranida barcha go‘sht va masalliqlar 100% Halol sertifikatlangan va pokiza tayyorlanadi.',
+        question: 'Taomlar sifati va pokizaligi qanday ta’minlanadi?',
+        answer: 'FAZO restoranida barcha go‘sht va masalliqlar oliy sifatli, saralangan va pokiza tayyorlanadi.',
         category: 'Sifat',
         orderIndex: 3,
       },
