@@ -1,9 +1,20 @@
+/**
+ * FAZO Restorani Namangan - Backend Express Server
+ * 
+ * Clean Architecture Overview:
+ * - Express.js REST API Architecture
+ * - MongoDB Connection via Mongoose ORM
+ * - Standardized API Response Schema: { success: boolean, message: string, data: any }
+ * - Modular Route Controllers & Middleware
+ */
+
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
+// Route Handlers
 import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import productRoutes from './routes/productRoutes.js';
@@ -13,27 +24,28 @@ import testimonialRoutes from './routes/testimonialRoutes.js';
 import faqRoutes from './routes/faqRoutes.js';
 import bookmarkRoutes from './routes/bookmarkRoutes.js';
 
+// Initialize Environment Variables
 dotenv.config();
 
-// Connect to Database
+// Connect Database (MongoDB Atlas / Local Fallback)
 connectDB();
 
 const app = express();
 
-// Body Parser & CORS
+// Global Middleware Configuration
 app.use(cors());
 app.use(express.json());
 
-// API Base Check
+// API Liveness Probe / Status Endpoint
 app.get('/api', (req, res) => {
   res.json({
     success: true,
-    message: 'Restaurant API service operational',
+    message: 'FAZO Restorani API service operational',
     timestamp: new Date(),
   });
 });
 
-// API Routes
+// REST API Route Endpoints
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
@@ -43,12 +55,12 @@ app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/faqs', faqRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
 
-// Error Handling Middleware
+// Global Error Handler Middleware
 app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
-  console.log(`Restaurant Backend Server listening on port ${PORT}`);
+  console.log(`FAZO Restorani Backend Server operational on port ${PORT}`);
 });
