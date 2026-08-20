@@ -14,6 +14,7 @@ import {
   LogOut,
   PhoneCall,
 } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -33,22 +34,12 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-custom py-2 shadow-sm">
       <div className="container">
-        {/* Brand Logo */}
-        <Link className="navbar-brand d-flex align-items-center gap-2 fw-extrabold fs-4" to="/">
-          <span
-            className="bg-warning bg-opacity-20 text-dark p-2 rounded-circle d-inline-flex align-items-center justify-content-center border border-warning border-opacity-30 shadow-sm"
-            style={{ width: '42px', height: '42px', fontSize: '1.2rem' }}
-          >
-            🌙
-          </span>
-          <span className="font-heading text-dark">
-            FAZO <span className="text-warning">Namangan</span>
-          </span>
-        </Link>
+        {/* Advanced Brand Logo */}
+        <BrandLogo showTagline={true} />
 
         {/* Mobile Toggle Button */}
         <button
-          className="navbar-toggler border-0 shadow-none text-dark"
+          className="navbar-toggler border-0 shadow-none text-dark ms-auto"
           type="button"
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
