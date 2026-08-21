@@ -4,6 +4,7 @@ import productService from '../services/productService';
 import categoryService from '../services/categoryService';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
+import { formatCurrency } from '../utils/formatCurrency';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -46,7 +47,7 @@ const AdminProducts = () => {
         }
       }
     } catch (err) {
-      setError(err.message || 'Failed to load products.');
+      setError(err.message || 'Taomlarni yuklashda xatolik yuz berdi.');
     } finally {
       setLoading(false);
     }
@@ -76,7 +77,7 @@ const AdminProducts = () => {
       name: product.name,
       description: product.description,
       price: product.price,
-      category: typeof product.category === 'object' ? product.category._id : product.category,
+      category: product.category?._id || (typeof product.category === 'string' ? product.category : categories[0]?._id || ''),
       image: product.image,
       isAvailable: product.isAvailable,
       isPopular: product.isPopular,
@@ -98,7 +99,7 @@ const AdminProducts = () => {
       setShowModal(false);
       fetchProductsAndCategories();
     } catch (err) {
-      setError(err.message || 'Failed to save product.');
+      setError(err.message || 'Taomni saqlashda xatolik yuz berdi.');
     } finally {
       setSaving(false);
     }
@@ -110,7 +111,7 @@ const AdminProducts = () => {
       setDeleteConfirmId(null);
       fetchProductsAndCategories();
     } catch (err) {
-      setError(err.message || 'Failed to delete product.');
+      setError(err.message || 'Taomni o‘chirishda xatolik yuz berdi.');
     }
   };
 
@@ -121,7 +122,7 @@ const AdminProducts = () => {
       });
       fetchProductsAndCategories();
     } catch (err) {
-      setError(err.message || 'Failed to toggle availability.');
+      setError(err.message || 'Mavjudlik holatini o‘zgartirishda xatolik.');
     }
   };
 
@@ -132,7 +133,7 @@ const AdminProducts = () => {
       });
       fetchProductsAndCategories();
     } catch (err) {
-      setError(err.message || 'Failed to toggle popular status.');
+      setError(err.message || 'Mashhurlik holatini o‘zgartirishda xatolik.');
     }
   };
 
@@ -144,13 +145,13 @@ const AdminProducts = () => {
     <div className="admin-products-page">
       <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
         <div>
-          <h2 className="fw-extrabold text-dark mb-1">Product Management</h2>
-          <p className="text-secondary">Add, edit, toggle availability, or delete food items from the menu.</p>
+          <h2 className="fw-extrabold text-dark mb-1">Taomlar Boshqaruvi</h2>
+          <p className="text-secondary">Yangi taom qo‘shing, narx va tavsiflarni tahrirlang yoki menyudan o‘chiring.</p>
         </div>
 
         <button onClick={handleOpenCreateModal} className="btn btn-primary-custom px-4 py-2 d-flex align-items-center gap-2">
           <Plus size={18} />
-          <span>Add New Product</span>
+          <span>Yangi Taom Qo‘shish</span>
         </button>
       </div>
 
@@ -165,7 +166,7 @@ const AdminProducts = () => {
           <input
             type="text"
             className="form-control bg-light border-start-0 rounded-end-pill"
-            placeholder="Search products by name..."
+            placeholder="Taom nomini qidiring..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -174,27 +175,27 @@ const AdminProducts = () => {
 
       {/* Products Table */}
       {loading ? (
-        <Loading text="Loading product inventory..." />
+        <Loading text="Taomlar ro‘yxati yuklanmoqda..." />
       ) : (
         <div className="card border-0 rounded-4 shadow-sm bg-white overflow-hidden">
           <div className="table-responsive">
             <table className="table align-middle mb-0">
               <thead className="table-light">
                 <tr>
-                  <th>Image</th>
-                  <th>Name</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Status</th>
-                  <th>Popular</th>
-                  <th className="text-end">Actions</th>
+                  <th>Rasm</th>
+                  <th>Taom Nomi</th>
+                  <th>Kategoriya</th>
+                  <th>Narxi</th>
+                  <th>Holati</th>
+                  <th>Mashhur</th>
+                  <th className="text-end">Amallar</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredProducts.length === 0 ? (
                   <tr>
                     <td colSpan="7" className="text-center py-4 text-muted">
-                      No products found.
+                      Hech qanday taom topilmadi.
                     </td>
                   </tr>
                 ) : (
@@ -216,10 +217,10 @@ const AdminProducts = () => {
                       </td>
                       <td>
                         <span className="badge bg-secondary bg-opacity-10 text-dark">
-                          {typeof prod.category === 'object' ? prod.category.name : 'Category'}
+                          {prod.category?.name || (typeof prod.category === 'string' ? prod.category : 'Kategoriya')}
                         </span>
                       </td>
-                      <td className="fw-extrabold text-primary">${prod.price.toFixed(2)}</td>
+                      <td className="fw-extrabold text-primary">{formatCurrency(prod.price)}</td>
                       <td>
                         <button
                           onClick={() => handleToggleAvailable(prod)}
@@ -229,7 +230,7 @@ const AdminProducts = () => {
                               : 'btn-danger bg-opacity-10 text-danger border-danger'
                           }`}
                         >
-                          {prod.isAvailable ? 'In Stock' : 'Unavailable'}
+                          {prod.isAvailable ? 'Sotuvda Mavjud' : 'Mavjud Emas'}
                         </button>
                       </td>
                       <td>
@@ -238,7 +239,7 @@ const AdminProducts = () => {
                           className={`btn btn-sm rounded-circle p-2 ${
                             prod.isPopular ? 'text-warning bg-warning bg-opacity-10' : 'text-muted bg-light'
                           }`}
-                          title="Toggle Popular Status"
+                          title="Mashhurlik holatini o‘zgartirish"
                         >
                           <Star size={16} fill={prod.isPopular ? '#ff9800' : 'none'} />
                         </button>
@@ -248,7 +249,7 @@ const AdminProducts = () => {
                           <button
                             onClick={() => handleOpenEditModal(prod)}
                             className="btn btn-outline-primary btn-sm rounded-circle p-2"
-                            title="Edit Product"
+                            title="Tahrirlash"
                           >
                             <Edit2 size={16} />
                           </button>
@@ -256,7 +257,7 @@ const AdminProducts = () => {
                           <button
                             onClick={() => setDeleteConfirmId(prod._id)}
                             className="btn btn-outline-danger btn-sm rounded-circle p-2"
-                            title="Delete Product"
+                            title="O‘chirish"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -276,14 +277,14 @@ const AdminProducts = () => {
         <div className="modal fade show d-block modal-backdrop-custom" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content rounded-4 p-4 text-center">
-              <h5 className="fw-bold text-dark mb-3">Confirm Delete</h5>
-              <p className="text-muted mb-4">Are you sure you want to delete this product? This action cannot be undone.</p>
+              <h5 className="fw-bold text-dark mb-3">O‘chirishni Tasdiqlang</h5>
+              <p className="text-muted mb-4">Ushbu taomni menyudan o‘chirmoqchimisiz? Ushbu amalni ortga qaytarib bo‘lmaydi.</p>
               <div className="d-flex justify-content-center gap-3">
                 <button className="btn btn-light rounded-pill px-4" onClick={() => setDeleteConfirmId(null)}>
-                  Cancel
+                  Bekor Qilish
                 </button>
                 <button className="btn btn-danger rounded-pill px-4" onClick={() => handleDeleteProduct(deleteConfirmId)}>
-                  Delete Product
+                  O‘chirish
                 </button>
               </div>
             </div>
@@ -298,7 +299,7 @@ const AdminProducts = () => {
             <div className="modal-content rounded-4 p-4">
               <div className="modal-header border-0 pb-0">
                 <h4 className="fw-bold text-dark">
-                  {editingProduct ? 'Edit Product' : 'Add New Product'}
+                  {editingProduct ? 'Taomni Tahrirlash' : 'Yangi Taom Qo‘shish'}
                 </h4>
                 <button className="btn-close" onClick={() => setShowModal(false)}></button>
               </div>
@@ -307,7 +308,7 @@ const AdminProducts = () => {
                 <div className="modal-body">
                   <div className="row g-3">
                     <div className="col-md-8">
-                      <label className="form-label fw-semibold">Product Name</label>
+                      <label className="form-label fw-semibold">Taom Nomi</label>
                       <input
                         type="text"
                         className="form-control rounded-3"
@@ -318,10 +319,10 @@ const AdminProducts = () => {
                     </div>
 
                     <div className="col-md-4">
-                      <label className="form-label fw-semibold">Price ($)</label>
+                      <label className="form-label fw-semibold">Narxi (So'mda)</label>
                       <input
                         type="number"
-                        step="0.01"
+                        step="1000"
                         min="0"
                         className="form-control rounded-3"
                         required
@@ -331,7 +332,7 @@ const AdminProducts = () => {
                     </div>
 
                     <div className="col-md-6">
-                      <label className="form-label fw-semibold">Category</label>
+                      <label className="form-label fw-semibold">Kategoriya</label>
                       <select
                         className="form-select rounded-3"
                         required
@@ -347,7 +348,7 @@ const AdminProducts = () => {
                     </div>
 
                     <div className="col-md-6">
-                      <label className="form-label fw-semibold">Image URL</label>
+                      <label className="form-label fw-semibold">Rasm Havolasi (URL)</label>
                       <input
                         type="url"
                         className="form-control rounded-3"
@@ -359,7 +360,7 @@ const AdminProducts = () => {
                     </div>
 
                     <div className="col-12">
-                      <label className="form-label fw-semibold">Description</label>
+                      <label className="form-label fw-semibold">Tavsifi va Masalliqlari</label>
                       <textarea
                         className="form-control rounded-3"
                         rows="3"
@@ -379,7 +380,7 @@ const AdminProducts = () => {
                           onChange={(e) => setFormData({ ...formData, isAvailable: e.target.checked })}
                         />
                         <label className="form-check-label fw-semibold" htmlFor="isAvailable">
-                          Available for Order
+                          Sotuvda Mavjud
                         </label>
                       </div>
                     </div>
@@ -394,7 +395,7 @@ const AdminProducts = () => {
                           onChange={(e) => setFormData({ ...formData, isPopular: e.target.checked })}
                         />
                         <label className="form-check-label fw-semibold" htmlFor="isPopular">
-                          Highlight as Popular
+                          Mashhur Taomlar Sifatida Ajratish
                         </label>
                       </div>
                     </div>
@@ -403,10 +404,10 @@ const AdminProducts = () => {
 
                 <div className="modal-footer border-0 pt-3">
                   <button type="button" className="btn btn-light rounded-pill px-4" onClick={() => setShowModal(false)}>
-                    Cancel
+                    Bekor Qilish
                   </button>
                   <button type="submit" disabled={saving} className="btn btn-primary-custom rounded-pill px-4">
-                    {saving ? 'Saving...' : 'Save Product'}
+                    {saving ? 'Saqlanmoqda...' : 'Taomni Saqlash'}
                   </button>
                 </div>
               </form>

@@ -22,7 +22,7 @@ const AdminLogin = () => {
       await login(email, password);
       navigate('/admin');
     } catch (err) {
-      setError(err.message || 'Invalid email or password.');
+      setError(err.message || 'Email yoki parol noto‘g‘ri kiritildi.');
     } finally {
       setLoading(false);
     }
@@ -36,7 +36,7 @@ const AdminLogin = () => {
             <ShieldCheck size={32} />
           </div>
           <h3 className="fw-extrabold font-heading mb-1">Admin Portal</h3>
-          <p className="small mb-0 opacity-75">SavoryBites Restaurant Management</p>
+          <p className="small mb-0 opacity-75">FAZO Restorani Boshqaruv Tizimi</p>
         </div>
 
         <div className="card-body p-4 p-md-5">
@@ -46,15 +46,15 @@ const AdminLogin = () => {
           <div className="alert alert-info py-2 px-3 small rounded-3 border-0 mb-4 d-flex align-items-center gap-2">
             <Info size={18} className="flex-shrink-0 text-info" />
             <div>
-              <strong>Default Credentials:</strong><br />
+              <strong>Boshlang‘ich Kirish Ma’lumotlari:</strong><br />
               Email: <code>admin@restaurant.com</code><br />
-              Password: <code>admin123</code>
+              Parol: <code>admin123</code>
             </div>
           </div>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label fw-semibold text-dark">Email Address</label>
+              <label className="form-label fw-semibold text-dark">Email Manzil</label>
               <div className="input-group">
                 <span className="input-group-text bg-light border-end-0 rounded-start-3">
                   <Mail size={18} className="text-muted" />
@@ -71,7 +71,7 @@ const AdminLogin = () => {
             </div>
 
             <div className="mb-4">
-              <label className="form-label fw-semibold text-dark">Password</label>
+              <label className="form-label fw-semibold text-dark">Parol</label>
               <div className="input-group">
                 <span className="input-group-text bg-light border-end-0 rounded-start-3">
                   <Lock size={18} className="text-muted" />
@@ -93,10 +93,10 @@ const AdminLogin = () => {
               className="btn btn-primary-custom w-100 py-3 rounded-pill fw-bold d-flex align-items-center justify-content-center gap-2 fs-6"
             >
               {loading ? (
-                <span>Authenticating...</span>
+                <span>Kirilmoqda...</span>
               ) : (
                 <>
-                  <span>Login to Dashboard</span>
+                  <span>Boshqaruv Paneliga Kirish</span>
                   <ArrowRight size={18} />
                 </>
               )}
@@ -105,7 +105,7 @@ const AdminLogin = () => {
 
           <div className="text-center mt-4 border-top pt-3">
             <Link to="/" className="text-muted text-decoration-none small hover-warning">
-              ← Return to Restaurant Website
+              ← Restoran Bosh Sahifasiga Qaytish
             </Link>
           </div>
         </div>

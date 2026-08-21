@@ -8,11 +8,12 @@ import { ToastProvider } from './context/ToastContext';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import { RestaurantStatusProvider, useRestaurantStatus } from './context/RestaurantStatusContext';
 import { formatCurrency } from './utils/formatCurrency';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AppRoutes from './routes/AppRoutes';
-import { ShoppingBag, ArrowRight } from 'lucide-react';
+import { ShoppingBag, ArrowRight, AlertTriangle } from 'lucide-react';
 
 const MobileStickyCartButton = () => {
   const { totalItems, totalPrice } = useCart();
@@ -40,12 +41,28 @@ const MobileStickyCartButton = () => {
   );
 };
 
+const RestaurantClosedBanner = () => {
+  const { isRestaurantOpen, closingMessage } = useRestaurantStatus();
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
+
+  if (isAdmin || isRestaurantOpen) return null;
+
+  return (
+    <div className="bg-danger text-white py-2 px-3 text-center fw-bold small d-flex align-items-center justify-content-center gap-2 sticky-top shadow" style={{ zIndex: 1040 }}>
+      <AlertTriangle size={18} className="animate-flame-bounce" />
+      <span>⚠️ RESTORAN HOZIRDA VAQTINCHA YOPIQ! Buyurtmalar qabul qilinmaydi.</span>
+    </div>
+  );
+};
+
 const AppContent = () => {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
 
   return (
     <div className="d-flex flex-column min-vh-100">
+      <RestaurantClosedBanner />
       {!isAdmin && <Navbar />}
       <div className="flex-grow-1">
         <AppRoutes />
@@ -63,7 +80,9 @@ function App() {
         <LanguageProvider>
           <AuthProvider>
             <CartProvider>
-              <AppContent />
+              <RestaurantStatusProvider>
+                <AppContent />
+              </RestaurantStatusProvider>
             </CartProvider>
           </AuthProvider>
         </LanguageProvider>

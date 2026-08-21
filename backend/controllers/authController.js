@@ -12,7 +12,7 @@ export const loginUser = async (req, res, next) => {
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide email and password',
+        message: 'Iltimos, email va parolni kiriting.',
       });
     }
 
@@ -21,7 +21,7 @@ export const loginUser = async (req, res, next) => {
     if (user && (await user.matchPassword(password))) {
       res.json({
         success: true,
-        message: 'Login successful',
+        message: 'Tizimga kirish muvaffaqiyatli amalga oshirildi.',
         data: {
           _id: user._id,
           name: user.name,
@@ -35,7 +35,7 @@ export const loginUser = async (req, res, next) => {
     } else {
       res.status(401).json({
         success: false,
-        message: 'Invalid email or password',
+        message: 'Email yoki parol noto‘g‘ri kiritildi.',
       });
     }
   } catch (error) {
@@ -53,7 +53,7 @@ export const registerCustomer = async (req, res, next) => {
     if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Please fill in all required fields (name, email, password)',
+        message: 'Iltimos, barcha majburiy maydonlarni to‘ldiring (ism, email, parol).',
       });
     }
 
@@ -61,7 +61,7 @@ export const registerCustomer = async (req, res, next) => {
     if (userExists) {
       return res.status(400).json({
         success: false,
-        message: 'User already exists with this email',
+        message: 'Ushbu email manzili bilan allaqachon foydalanuvchi ro‘yxatdan o‘tgan.',
       });
     }
 
@@ -76,7 +76,7 @@ export const registerCustomer = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: 'Account created successfully',
+      message: 'Akkaunt muvaffaqiyatli yaratildi.',
       data: {
         _id: user._id,
         name: user.name,
@@ -101,13 +101,13 @@ export const getMe = async (req, res, next) => {
     if (user) {
       res.json({
         success: true,
-        message: 'User profile retrieved',
+        message: 'Foydalanuvchi profili olindi.',
         data: user,
       });
     } else {
       res.status(404).json({
         success: false,
-        message: 'User not found',
+        message: 'Foydalanuvchi topilmadi.',
       });
     }
   } catch (error) {
@@ -121,7 +121,7 @@ export const getMe = async (req, res, next) => {
 export const updateProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    if (!user) return res.status(404).json({ success: false, message: 'Foydalanuvchi topilmadi.' });
 
     user.name = req.body.name || user.name;
     user.phone = req.body.phone !== undefined ? req.body.phone : user.phone;
@@ -133,7 +133,7 @@ export const updateProfile = async (req, res, next) => {
     const updatedUser = await user.save();
     res.json({
       success: true,
-      message: 'Profile updated successfully',
+      message: 'Profil ma’lumotlari muvaffaqiyatli saqlandi.',
       data: {
         _id: updatedUser._id,
         name: updatedUser.name,
@@ -155,19 +155,19 @@ export const updateProfile = async (req, res, next) => {
 export const addAddress = async (req, res, next) => {
   try {
     const { title, street, city, phone } = req.body;
-    if (!street) return res.status(400).json({ success: false, message: 'Street address is required' });
+    if (!street) return res.status(400).json({ success: false, message: 'Ko‘cha va uy manzili majburiy.' });
 
     const user = await User.findById(req.user._id);
     user.addresses.push({
-      title: title || 'Home',
+      title: title || 'Uy',
       street,
-      city: city || '',
+      city: city || 'Namangan',
       phone: phone || user.phone || '',
       isDefault: user.addresses.length === 0,
     });
 
     await user.save();
-    res.json({ success: true, message: 'Address saved', data: user.addresses });
+    res.json({ success: true, message: 'Manzil saqlandi.', data: user.addresses });
   } catch (error) {
     next(error);
   }
@@ -181,7 +181,7 @@ export const removeAddress = async (req, res, next) => {
     const user = await User.findById(req.user._id);
     user.addresses = user.addresses.filter((a) => a._id.toString() !== req.params.addressId);
     await user.save();
-    res.json({ success: true, message: 'Address removed', data: user.addresses });
+    res.json({ success: true, message: 'Manzil o‘chirildi.', data: user.addresses });
   } catch (error) {
     next(error);
   }
@@ -193,12 +193,11 @@ export const removeAddress = async (req, res, next) => {
 export const getMyOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({ phone: req.user.phone || '' }).sort({ createdAt: -1 });
-    // Also match by email/name if phone doesn't return
     let allOrders = orders;
     if (allOrders.length === 0) {
       allOrders = await Order.find({ customerName: { $regex: req.user.name, $options: 'i' } }).sort({ createdAt: -1 });
     }
-    res.json({ success: true, message: 'User orders retrieved', data: allOrders });
+    res.json({ success: true, message: 'Mijoz buyurtmalari olindi.', data: allOrders });
   } catch (error) {
     next(error);
   }
@@ -212,12 +211,12 @@ export const forgotPassword = async (req, res, next) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ success: false, message: 'No account found with this email' });
+      return res.status(404).json({ success: false, message: 'Ushbu email manzili bilan akkaunt topilmadi.' });
     }
 
     res.json({
       success: true,
-      message: 'Password reset link sent to your email. (Simulated token generated: RESTAURANT-RESET-99281)',
+      message: 'Parolni tiklash havolasi email manzilingizga yuborildi.',
       data: { resetToken: 'RESTAURANT-RESET-99281' },
     });
   } catch (error) {

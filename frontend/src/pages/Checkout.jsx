@@ -3,16 +3,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useRestaurantStatus } from '../context/RestaurantStatusContext';
 import { formatCurrency } from '../utils/formatCurrency';
 import orderService from '../services/orderService';
 import ErrorMessage from '../components/ErrorMessage';
-import { ShieldCheck, Truck, CreditCard, ShoppingBag, ArrowRight, UserCheck, Info } from 'lucide-react';
+import { ShieldCheck, Truck, CreditCard, ShoppingBag, ArrowRight, UserCheck, Info, AlertTriangle } from 'lucide-react';
 
 const Checkout = () => {
   const { cartItems, totalPrice, clearCart } = useCart();
   const { adminUser, isAuthenticated } = useAuth();
+  const { isRestaurantOpen } = useRestaurantStatus();
   const { t } = useLanguage();
   const navigate = useNavigate();
+
 
   const [formData, setFormData] = useState({
     customerName: adminUser?.name || '',
@@ -32,11 +35,29 @@ const Checkout = () => {
 
   const handleSubmitOrder = async (e) => {
     e.preventDefault();
+    if (!isRestaurantOpen) {
+      setError('Restoran hozirda vaqtincha yopilgan. Buyurtmalar qabul qilinmaydi.');
+      return;
+    }
     setLoading(true);
     setError(null);
 
+
+    const fullAddress = `${formData.street}${formData.city ? ', ' + formData.city : ''}`;
+
     const orderPayload = {
+      customerName: formData.customerName,
+      customerEmail: formData.customerEmail,
+      phone: formData.phone,
+      address: fullAddress,
+      shippingAddress: {
+        street: formData.street,
+        city: formData.city,
+      },
+      paymentMethod: formData.paymentMethod,
+      notes: formData.notes,
       items: cartItems.map((i) => ({
+        productId: i._id,
         product: i._id,
         name: i.name,
         price: i.price,
@@ -44,16 +65,8 @@ const Checkout = () => {
         subtotal: i.price * i.quantity,
       })),
       totalPrice: finalTotal,
-      customerName: formData.customerName,
-      customerEmail: formData.customerEmail,
-      phone: formData.phone,
-      shippingAddress: {
-        street: formData.street,
-        city: formData.city,
-      },
-      paymentMethod: formData.paymentMethod,
-      notes: formData.notes,
     };
+
 
     try {
       const res = await orderService.createOrder(orderPayload);

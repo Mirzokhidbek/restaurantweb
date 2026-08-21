@@ -23,6 +23,7 @@ import chefRoutes from './routes/chefRoutes.js';
 import testimonialRoutes from './routes/testimonialRoutes.js';
 import faqRoutes from './routes/faqRoutes.js';
 import bookmarkRoutes from './routes/bookmarkRoutes.js';
+import settingRoutes from './routes/settingRoutes.js';
 
 // Initialize Environment Variables
 dotenv.config();
@@ -54,6 +55,7 @@ app.use('/api/chefs', chefRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/faqs', faqRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
+app.use('/api/settings', settingRoutes);
 
 // Global Error Handler Middleware
 app.use(notFound);

@@ -3,6 +3,7 @@ import { Users, Phone, ShoppingBag, DollarSign, Calendar } from 'lucide-react';
 import orderService from '../services/orderService';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
+import { formatCurrency } from '../utils/formatCurrency';
 
 const AdminCustomers = () => {
   const [customers, setCustomers] = useState([]);
@@ -26,7 +27,7 @@ const AdminCustomers = () => {
               customerMap[key] = {
                 phone: ord.phone,
                 name: ord.customerName,
-                address: ord.address,
+                address: ord.shippingAddress?.street || ord.address,
                 orderCount: 0,
                 totalSpent: 0,
                 lastOrderDate: ord.createdAt,
@@ -47,7 +48,7 @@ const AdminCustomers = () => {
           setCustomers(Object.values(customerMap));
         }
       } catch (err) {
-        setError(err.message || 'Failed to aggregate customer data.');
+        setError(err.message || 'Mijozlar ma’lumotlarini tahlil qilishda xatolik.');
       } finally {
         setLoading(false);
       }
@@ -59,32 +60,32 @@ const AdminCustomers = () => {
   return (
     <div className="admin-customers-page">
       <div className="mb-4">
-        <h2 className="fw-extrabold text-dark mb-1">Customer Insights</h2>
-        <p className="text-secondary">View order history metrics and lifetime spending per customer.</p>
+        <h2 className="fw-extrabold text-dark mb-1">Mijozlar Tahlili</h2>
+        <p className="text-secondary">Har bir mijozning buyurtmalar tarixi va harid hajmini kuzatib boring.</p>
       </div>
 
       {error && <ErrorMessage message={error} />}
 
       {loading ? (
-        <Loading text="Analyzing customer order histories..." />
+        <Loading text="Mijozlar buyurtma tarixi tahlil qilinmoqda..." />
       ) : (
         <div className="card border-0 rounded-4 shadow-sm bg-white overflow-hidden">
           <div className="table-responsive">
             <table className="table align-middle mb-0 table-hover">
               <thead className="table-light">
                 <tr>
-                  <th>Customer Name</th>
-                  <th>Phone Number</th>
-                  <th>Total Orders</th>
-                  <th>Lifetime Spend</th>
-                  <th>Last Order Date</th>
+                  <th>Mijoz Ismi</th>
+                  <th>Telefon Raqami</th>
+                  <th>Jami Buyurtmalar</th>
+                  <th>Jami Haridi</th>
+                  <th>Oxirgi Buyurtma Sanasi</th>
                 </tr>
               </thead>
               <tbody>
                 {customers.length === 0 ? (
                   <tr>
                     <td colSpan="5" className="text-center py-4 text-muted">
-                      No customer records found yet.
+                      Hozircha mijozlar yozuvlari kiritilmagan.
                     </td>
                   </tr>
                 ) : (
@@ -99,11 +100,11 @@ const AdminCustomers = () => {
                       <td className="text-secondary font-monospace small">{cust.phone}</td>
                       <td>
                         <span className="badge bg-light text-dark border px-3 py-2 rounded-pill">
-                          {cust.orderCount} {cust.orderCount === 1 ? 'order' : 'orders'}
+                          {cust.orderCount} ta buyurtma
                         </span>
                       </td>
                       <td className="fw-extrabold text-success fs-6">
-                        ${cust.totalSpent.toFixed(2)}
+                        {formatCurrency(cust.totalSpent)}
                       </td>
                       <td className="text-muted small">
                         {new Date(cust.lastOrderDate).toLocaleDateString()}

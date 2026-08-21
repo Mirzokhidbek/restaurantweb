@@ -14,6 +14,7 @@ import orderService from '../services/orderService';
 import productService from '../services/productService';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
+import { formatCurrency } from '../utils/formatCurrency';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -50,7 +51,7 @@ const AdminDashboard = () => {
           setRecentOrders(ordersRes.data.slice(0, 5));
         }
       } catch (err) {
-        setError(err.message || 'Failed to load dashboard statistics.');
+        setError(err.message || 'Statistikani yuklashda xatolik yuz berdi.');
       } finally {
         setLoading(false);
       }
@@ -58,6 +59,18 @@ const AdminDashboard = () => {
 
     fetchDashboardData();
   }, []);
+
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 'pending': return 'Kutilmoqda';
+      case 'confirmed': return 'Tasdiqlandi';
+      case 'preparing': return 'Tayyorlanmoqda';
+      case 'ready': return 'Yetkazishga Tayyor';
+      case 'completed': return 'Bajarildi';
+      case 'cancelled': return 'Bekor Qilindi';
+      default: return status;
+    }
+  };
 
   const getStatusBadgeClass = (status) => {
     switch (status) {
@@ -71,14 +84,14 @@ const AdminDashboard = () => {
     }
   };
 
-  if (loading) return <Loading text="Fetching live statistics..." />;
+  if (loading) return <Loading text="Jonli statistikalar yuklanmoqda..." />;
   if (error) return <ErrorMessage message={error} />;
 
   return (
     <div className="admin-dashboard">
       <div className="mb-4">
-        <h2 className="fw-extrabold text-dark mb-1">Overview Dashboard</h2>
-        <p className="text-secondary">Track real-time sales, order statuses, and customer statistics.</p>
+        <h2 className="fw-extrabold text-dark mb-1">Boshqaruv Paneli</h2>
+        <p className="text-secondary">Real vaqtdagi savdo, buyurtmalar va mijozlar statistikasini kuzatib boring.</p>
       </div>
 
       {/* 6 Statistic Cards Grid */}
@@ -86,16 +99,16 @@ const AdminDashboard = () => {
         <div className="col-12 col-sm-6 col-xl-4">
           <div className="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 position-relative overflow-hidden">
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <span className="text-muted fw-semibold small">Total Revenue</span>
+              <span className="text-muted fw-semibold small">Umumiy Daromad</span>
               <div className="p-3 bg-success bg-opacity-10 text-success rounded-circle">
                 <DollarSign size={24} />
               </div>
             </div>
             <h2 className="display-6 fw-extrabold text-dark mb-1">
-              ${stats.totalRevenue.toFixed(2)}
+              {formatCurrency(stats.totalRevenue)}
             </h2>
             <small className="text-success d-flex align-items-center gap-1">
-              <TrendingUp size={14} /> Total accumulated earnings
+              <TrendingUp size={14} /> Jami tushgan daromad
             </small>
           </div>
         </div>
@@ -103,65 +116,65 @@ const AdminDashboard = () => {
         <div className="col-12 col-sm-6 col-xl-4">
           <div className="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 position-relative overflow-hidden">
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <span className="text-muted fw-semibold small">Total Orders</span>
+              <span className="text-muted fw-semibold small">Jami Buyurtmalar</span>
               <div className="p-3 bg-primary bg-opacity-10 text-primary rounded-circle">
                 <ShoppingBag size={24} />
               </div>
             </div>
             <h2 className="display-6 fw-extrabold text-dark mb-1">{stats.totalOrders}</h2>
-            <small className="text-muted">Lifetime orders placed</small>
+            <small className="text-muted">Barcha tushgan buyurtmalar</small>
           </div>
         </div>
 
         <div className="col-12 col-sm-6 col-xl-4">
           <div className="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 position-relative overflow-hidden">
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <span className="text-muted fw-semibold small">Today's Orders</span>
+              <span className="text-muted fw-semibold small">Bugungi Buyurtmalar</span>
               <div className="p-3 bg-warning bg-opacity-10 text-warning rounded-circle">
                 <Clock size={24} />
               </div>
             </div>
             <h2 className="display-6 fw-extrabold text-dark mb-1">{stats.todaysOrders}</h2>
-            <small className="text-warning fw-bold">Orders placed today</small>
+            <small className="text-warning fw-bold">Bugun tushgan buyurtmalar</small>
           </div>
         </div>
 
         <div className="col-12 col-sm-6 col-xl-4">
           <div className="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 position-relative overflow-hidden">
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <span className="text-muted fw-semibold small">Pending Orders</span>
+              <span className="text-muted fw-semibold small">Kutilayotgan Buyurtmalar</span>
               <div className="p-3 bg-danger bg-opacity-10 text-danger rounded-circle">
                 <Clock size={24} />
               </div>
             </div>
             <h2 className="display-6 fw-extrabold text-danger mb-1">{stats.pendingOrders}</h2>
-            <small className="text-danger fw-semibold">Requires kitchen action</small>
+            <small className="text-danger fw-semibold">Oshxona tasdig‘ini kutmoqda</small>
           </div>
         </div>
 
         <div className="col-12 col-sm-6 col-xl-4">
           <div className="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 position-relative overflow-hidden">
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <span className="text-muted fw-semibold small">Total Products</span>
+              <span className="text-muted fw-semibold small">Jami Taomlar</span>
               <div className="p-3 bg-info bg-opacity-10 text-info rounded-circle">
                 <UtensilsCrossed size={24} />
               </div>
             </div>
             <h2 className="display-6 fw-extrabold text-dark mb-1">{totalProducts}</h2>
-            <small className="text-muted">Active menu dishes</small>
+            <small className="text-muted">Menyudagi taomlar soni</small>
           </div>
         </div>
 
         <div className="col-12 col-sm-6 col-xl-4">
           <div className="card border-0 rounded-4 shadow-sm p-4 bg-white h-100 position-relative overflow-hidden">
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <span className="text-muted fw-semibold small">Total Customers</span>
+              <span className="text-muted fw-semibold small">Mijozlar Soni</span>
               <div className="p-3 bg-purple bg-opacity-10 text-dark rounded-circle">
                 <Users size={24} />
               </div>
             </div>
             <h2 className="display-6 fw-extrabold text-dark mb-1">{stats.totalCustomers}</h2>
-            <small className="text-muted">Unique customer profiles</small>
+            <small className="text-muted">Ro‘yxatdan o‘tgan mijozlar</small>
           </div>
         </div>
       </div>
@@ -169,27 +182,27 @@ const AdminDashboard = () => {
       {/* Recent Orders Section */}
       <div className="card border-0 rounded-4 shadow-sm p-4 bg-white">
         <div className="d-flex align-items-center justify-content-between mb-4">
-          <h5 className="fw-bold text-dark mb-0">Recent Orders</h5>
+          <h5 className="fw-bold text-dark mb-0">Oxirgi Buyurtmalar</h5>
           <Link to="/admin/orders" className="btn btn-outline-custom btn-sm rounded-pill d-flex align-items-center gap-1">
-            <span>Manage All Orders</span>
+            <span>Barchasini Boshqarish</span>
             <ArrowRight size={14} />
           </Link>
         </div>
 
         {recentOrders.length === 0 ? (
-          <p className="text-muted text-center py-4">No recent orders yet.</p>
+          <p className="text-muted text-center py-4">Hozircha buyurtmalar yo‘q.</p>
         ) : (
           <div className="table-responsive">
             <table className="table align-middle table-hover">
               <thead className="table-light">
                 <tr>
-                  <th>Order ID</th>
-                  <th>Customer</th>
-                  <th>Phone</th>
-                  <th>Items</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                  <th>Date</th>
+                  <th>ID</th>
+                  <th>Mijoz</th>
+                  <th>Telefon</th>
+                  <th>Taomlar</th>
+                  <th>Jami Summa</th>
+                  <th>Holati</th>
+                  <th>Sana</th>
                 </tr>
               </thead>
               <tbody>
@@ -200,11 +213,11 @@ const AdminDashboard = () => {
                     </td>
                     <td className="fw-semibold text-dark">{order.customerName}</td>
                     <td className="text-secondary small">{order.phone}</td>
-                    <td>{order.items.length} items</td>
-                    <td className="fw-extrabold text-primary">${order.totalPrice.toFixed(2)}</td>
+                    <td>{order.items.length} ta taom</td>
+                    <td className="fw-extrabold text-primary">{formatCurrency(order.totalPrice)}</td>
                     <td>
-                      <span className={`badge rounded-pill px-3 py-2 text-uppercase ${getStatusBadgeClass(order.status)}`}>
-                        {order.status}
+                      <span className={`badge rounded-pill px-3 py-2 ${getStatusBadgeClass(order.status)}`}>
+                        {getStatusLabel(order.status)}
                       </span>
                     </td>
                     <td className="text-muted small">

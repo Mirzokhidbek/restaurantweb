@@ -6,12 +6,13 @@ import Product from '../models/Product.js';
 // @access  Public
 export const createOrder = async (req, res, next) => {
   try {
-    const { customerName, phone, address, notes, items } = req.body;
+    const { customerName, phone, notes, items } = req.body;
+    const address = req.body.address || req.body.shippingAddress?.street || req.body.street;
 
     if (!customerName || !phone || !address || !items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide customer details and at least one order item',
+        message: 'Iltimos, mijoz ma’lumotlarini va kamida bitta taomni tanlang.',
       });
     }
 
@@ -19,17 +20,18 @@ export const createOrder = async (req, res, next) => {
     const processedItems = [];
 
     for (const item of items) {
-      const product = await Product.findById(item.productId);
+      const targetProductId = item.productId || item.product || item._id;
+      const product = await Product.findById(targetProductId);
       if (!product) {
         return res.status(400).json({
           success: false,
-          message: `Product not found for item: ${item.name || item.productId}`,
+          message: `Taom topilmadi: ${item.name || targetProductId}`,
         });
       }
       if (!product.isAvailable) {
         return res.status(400).json({
           success: false,
-          message: `Product '${product.name}' is currently unavailable`,
+          message: `'${product.name}' taomi hozirda sotuvda mavjud emas.`,
         });
       }
 
@@ -46,19 +48,23 @@ export const createOrder = async (req, res, next) => {
       });
     }
 
+    // Add standard delivery fee if applicable
+    const deliveryFee = calculatedTotal >= 150000 ? 0 : 15000;
+    const finalTotal = calculatedTotal + deliveryFee;
+
     const order = await Order.create({
       customerName,
       phone,
       address,
       notes: notes || '',
       items: processedItems,
-      totalPrice: calculatedTotal,
+      totalPrice: finalTotal,
       status: 'pending',
     });
 
     res.status(201).json({
       success: true,
-      message: 'Order placed successfully',
+      message: 'Buyurtmangiz muvaffaqiyatli rasmiylashtirildi!',
       data: order,
     });
   } catch (error) {
@@ -74,7 +80,7 @@ export const getOrders = async (req, res, next) => {
     const orders = await Order.find({}).sort({ createdAt: -1 });
     res.json({
       success: true,
-      message: 'Orders retrieved successfully',
+      message: 'Buyurtmalar ro‘yxati olindi.',
       data: orders,
     });
   } catch (error) {
@@ -91,13 +97,13 @@ export const getOrderById = async (req, res, next) => {
     if (!order) {
       return res.status(404).json({
         success: false,
-        message: 'Order not found',
+        message: 'Buyurtma topilmadi.',
       });
     }
 
     res.json({
       success: true,
-      message: 'Order retrieved successfully',
+      message: 'Buyurtma ma’lumotlari olindi.',
       data: order,
     });
   } catch (error) {
@@ -116,7 +122,7 @@ export const updateOrderStatus = async (req, res, next) => {
     if (!status || !allowedStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
-        message: `Status must be one of: ${allowedStatuses.join(', ')}`,
+        message: `Noto‘g‘ri holat kiritildi. Ruxsat etilgan holatlar: ${allowedStatuses.join(', ')}`,
       });
     }
 
@@ -124,7 +130,7 @@ export const updateOrderStatus = async (req, res, next) => {
     if (!order) {
       return res.status(404).json({
         success: false,
-        message: 'Order not found',
+        message: 'Buyurtma topilmadi.',
       });
     }
 
@@ -133,7 +139,7 @@ export const updateOrderStatus = async (req, res, next) => {
 
     res.json({
       success: true,
-      message: 'Order status updated successfully',
+      message: 'Buyurtma holati muvaffaqiyatli yangilandi.',
       data: updatedOrder,
     });
   } catch (error) {
@@ -150,7 +156,7 @@ export const deleteOrder = async (req, res, next) => {
     if (!order) {
       return res.status(404).json({
         success: false,
-        message: 'Order not found',
+        message: 'Buyurtma topilmadi.',
       });
     }
 
@@ -158,7 +164,7 @@ export const deleteOrder = async (req, res, next) => {
 
     res.json({
       success: true,
-      message: 'Order deleted successfully',
+      message: 'Buyurtma muvaffaqiyatli o‘chirildi.',
       data: {},
     });
   } catch (error) {
@@ -183,7 +189,7 @@ export const getStats = async (req, res, next) => {
       (o) => new Date(o.createdAt) >= today
     ).length;
 
-    // Revenue calculation (from completed/ready/preparing/confirmed/pending orders, excluding cancelled)
+    // Revenue calculation (excluding cancelled)
     const totalRevenue = orders
       .filter((o) => o.status !== 'cancelled')
       .reduce((sum, o) => sum + o.totalPrice, 0);
@@ -196,7 +202,7 @@ export const getStats = async (req, res, next) => {
 
     res.json({
       success: true,
-      message: 'Dashboard statistics calculated',
+      message: 'Boshqaruv paneli statistikasi hisoblandi.',
       data: {
         totalOrders,
         todaysOrders,

@@ -3,6 +3,7 @@ import { Eye, Clock, CheckCircle2, ChevronDown, Trash2, MapPin, Phone, FileText 
 import orderService from '../services/orderService';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
+import { formatCurrency } from '../utils/formatCurrency';
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -12,6 +13,18 @@ const AdminOrders = () => {
 
   const allowedStatuses = ['pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'];
 
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 'pending': return 'Kutilmoqda';
+      case 'confirmed': return 'Tasdiqlandi';
+      case 'preparing': return 'Tayyorlanmoqda';
+      case 'ready': return 'Yetkazishga Tayyor';
+      case 'completed': return 'Bajarildi';
+      case 'cancelled': return 'Bekor Qilindi';
+      default: return status;
+    }
+  };
+
   const fetchOrders = async () => {
     try {
       setLoading(true);
@@ -20,7 +33,7 @@ const AdminOrders = () => {
         setOrders(res.data);
       }
     } catch (err) {
-      setError(err.message || 'Failed to load orders.');
+      setError(err.message || 'Buyurtmalarni yuklashda xatolik yuz berdi.');
     } finally {
       setLoading(false);
     }
@@ -38,18 +51,18 @@ const AdminOrders = () => {
         setSelectedOrder((prev) => ({ ...prev, status: newStatus }));
       }
     } catch (err) {
-      setError(err.message || 'Failed to update order status.');
+      setError(err.message || 'Buyurtma holatini o‘zgartirishda xatolik.');
     }
   };
 
   const handleDeleteOrder = async (orderId) => {
-    if (!window.confirm('Are you sure you want to delete this order record?')) return;
+    if (!window.confirm('Haqiqatan ham ushbu buyurtma yozuvini o‘chirmoqchimisiz?')) return;
     try {
       await orderService.deleteOrder(orderId);
       setSelectedOrder(null);
       fetchOrders();
     } catch (err) {
-      setError(err.message || 'Failed to delete order.');
+      setError(err.message || 'Buyurtmani o‘chirishda xatolik.');
     }
   };
 
@@ -68,34 +81,34 @@ const AdminOrders = () => {
   return (
     <div className="admin-orders-page">
       <div className="mb-4">
-        <h2 className="fw-extrabold text-dark mb-1">Order Management</h2>
-        <p className="text-secondary">Track customer orders, update delivery progress, and view order details.</p>
+        <h2 className="fw-extrabold text-dark mb-1">Buyurtmalar Boshqaruvi</h2>
+        <p className="text-secondary">Mijozlar buyurtmalarini kuzating, yetkazish bosqichlarini yangilang va tafsilotlarni ko‘ring.</p>
       </div>
 
       {error && <ErrorMessage message={error} />}
 
       {loading ? (
-        <Loading text="Loading order queue..." />
+        <Loading text="Buyurtmalar ro‘yxati yuklanmoqda..." />
       ) : (
         <div className="card border-0 rounded-4 shadow-sm bg-white overflow-hidden">
           <div className="table-responsive">
             <table className="table align-middle mb-0 table-hover">
               <thead className="table-light">
                 <tr>
-                  <th>Order ID</th>
-                  <th>Customer</th>
-                  <th>Phone</th>
-                  <th>Total</th>
-                  <th>Current Status</th>
-                  <th>Date</th>
-                  <th className="text-end">Actions</th>
+                  <th>Buyurtma ID</th>
+                  <th>Mijoz</th>
+                  <th>Telefon</th>
+                  <th>Jami Summa</th>
+                  <th>Joriy Holati</th>
+                  <th>Sana</th>
+                  <th className="text-end">Amallar</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.length === 0 ? (
                   <tr>
                     <td colSpan="7" className="text-center py-4 text-muted">
-                      No orders recorded yet.
+                      Hozircha hech qanday buyurtma kiritilmagan.
                     </td>
                   </tr>
                 ) : (
@@ -105,33 +118,33 @@ const AdminOrders = () => {
                       <td>
                         <div className="fw-bold text-dark">{ord.customerName}</div>
                         <small className="text-muted text-truncate d-block" style={{ maxWidth: '180px' }}>
-                          {ord.address}
+                          {ord.shippingAddress?.street || ord.address}
                         </small>
                       </td>
                       <td className="text-secondary small">{ord.phone}</td>
-                      <td className="fw-extrabold text-primary">${ord.totalPrice.toFixed(2)}</td>
+                      <td className="fw-extrabold text-primary">{formatCurrency(ord.totalPrice)}</td>
                       <td>
                         <div className="dropdown">
                           <button
-                            className={`btn btn-sm dropdown-toggle rounded-pill px-3 fw-bold text-uppercase ${getStatusBadgeClass(
+                            className={`btn btn-sm dropdown-toggle rounded-pill px-3 fw-bold ${getStatusBadgeClass(
                               ord.status
                             )}`}
                             type="button"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                           >
-                            {ord.status}
+                            {getStatusLabel(ord.status)}
                           </button>
                           <ul className="dropdown-menu shadow border-0 rounded-3">
                             {allowedStatuses.map((st) => (
                               <li key={st}>
                                 <button
-                                  className={`dropdown-item text-capitalize ${
+                                  className={`dropdown-item ${
                                     ord.status === st ? 'active fw-bold' : ''
                                   }`}
                                   onClick={() => handleStatusChange(ord._id, st)}
                                 >
-                                  {st}
+                                  {getStatusLabel(st)}
                                 </button>
                               </li>
                             ))}
@@ -146,14 +159,14 @@ const AdminOrders = () => {
                           <button
                             onClick={() => setSelectedOrder(ord)}
                             className="btn btn-outline-primary btn-sm rounded-circle p-2"
-                            title="View Details"
+                            title="Tafsilotlarni Ko‘rish"
                           >
                             <Eye size={16} />
                           </button>
                           <button
                             onClick={() => handleDeleteOrder(ord._id)}
                             className="btn btn-outline-danger btn-sm rounded-circle p-2"
-                            title="Delete Order"
+                            title="O‘chirish"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -175,7 +188,7 @@ const AdminOrders = () => {
             <div className="modal-content rounded-4 p-4">
               <div className="modal-header border-0 pb-0">
                 <h4 className="fw-bold text-dark">
-                  Order Details <span className="font-monospace text-primary">#{selectedOrder._id}</span>
+                  Buyurtma Tafsilotlari <span className="font-monospace text-primary">#{selectedOrder._id}</span>
                 </h4>
                 <button className="btn-close" onClick={() => setSelectedOrder(null)}></button>
               </div>
@@ -185,7 +198,7 @@ const AdminOrders = () => {
                   <div className="col-md-6">
                     <div className="p-3 bg-light rounded-4">
                       <h6 className="fw-bold text-dark mb-2 d-flex align-items-center gap-2">
-                        <Phone size={16} className="text-warning" /> Customer Contact
+                        <Phone size={16} className="text-warning" /> Mijoz Aloqasi
                       </h6>
                       <p className="fw-bold mb-1 text-dark">{selectedOrder.customerName}</p>
                       <small className="text-muted d-block">{selectedOrder.phone}</small>
@@ -195,36 +208,38 @@ const AdminOrders = () => {
                   <div className="col-md-6">
                     <div className="p-3 bg-light rounded-4">
                       <h6 className="fw-bold text-dark mb-2 d-flex align-items-center gap-2">
-                        <MapPin size={16} className="text-warning" /> Delivery Address
+                        <MapPin size={16} className="text-warning" /> Yetkazib Berish Manzili
                       </h6>
-                      <small className="text-dark d-block">{selectedOrder.address}</small>
+                      <small className="text-dark d-block">
+                        {selectedOrder.shippingAddress?.street || selectedOrder.address}
+                      </small>
                       {selectedOrder.notes && (
                         <small className="text-muted italic d-block mt-1">
-                          Note: "{selectedOrder.notes}"
+                          Izoh: "{selectedOrder.notes}"
                         </small>
                       )}
                     </div>
                   </div>
                 </div>
 
-                <h6 className="fw-bold text-dark mb-3">Ordered Items ({selectedOrder.items.length})</h6>
+                <h6 className="fw-bold text-dark mb-3">Buyurtma Qilingan Taomlar ({selectedOrder.items.length})</h6>
                 <div className="table-responsive border rounded-4 mb-4">
                   <table className="table mb-0 align-middle">
                     <thead className="table-light">
                       <tr>
-                        <th>Item</th>
-                        <th>Price</th>
-                        <th>Qty</th>
-                        <th className="text-end">Subtotal</th>
+                        <th>Taom</th>
+                        <th>Narxi</th>
+                        <th>Soni</th>
+                        <th className="text-end">Jami Summa</th>
                       </tr>
                     </thead>
                     <tbody>
                       {selectedOrder.items.map((item, i) => (
                         <tr key={i}>
                           <td className="fw-bold text-dark">{item.name}</td>
-                          <td>${item.price.toFixed(2)}</td>
+                          <td>{formatCurrency(item.price)}</td>
                           <td>{item.quantity}</td>
-                          <td className="text-end fw-bold">${item.subtotal.toFixed(2)}</td>
+                          <td className="text-end fw-bold">{formatCurrency(item.price * item.quantity)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -233,15 +248,15 @@ const AdminOrders = () => {
 
                 <div className="d-flex justify-content-between align-items-center bg-light p-3 rounded-4">
                   <div>
-                    <span className="text-muted small d-block">Status</span>
-                    <span className={`badge rounded-pill px-3 py-2 text-uppercase ${getStatusBadgeClass(selectedOrder.status)}`}>
-                      {selectedOrder.status}
+                    <span className="text-muted small d-block">Holati</span>
+                    <span className={`badge rounded-pill px-3 py-2 ${getStatusBadgeClass(selectedOrder.status)}`}>
+                      {getStatusLabel(selectedOrder.status)}
                     </span>
                   </div>
                   <div className="text-end">
-                    <span className="text-muted small d-block">Total Price</span>
+                    <span className="text-muted small d-block">Jami Summa</span>
                     <span className="fs-3 fw-extrabold text-primary">
-                      ${selectedOrder.totalPrice.toFixed(2)}
+                      {formatCurrency(selectedOrder.totalPrice)}
                     </span>
                   </div>
                 </div>
@@ -249,7 +264,7 @@ const AdminOrders = () => {
 
               <div className="modal-footer border-0 pt-0">
                 <button className="btn btn-light rounded-pill px-4" onClick={() => setSelectedOrder(null)}>
-                  Close
+                  Yopish
                 </button>
               </div>
             </div>

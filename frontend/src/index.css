@@ -424,3 +424,56 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   animation: progressSlide 4.5s linear infinite;
 }
 
+/* Admin Layout Responsiveness Fix */
+.admin-main-wrapper {
+  margin-left: 260px !important;
+  width: calc(100% - 260px) !important;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 991.98px) {
+  .admin-main-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}
+
+/* 3D iOS-Style Status Toggle Widget */
+.status-toggle-widget {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.status-toggle-widget:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.status-pulse-green {
+  width: 10px;
+  height: 10px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #10b981;
+  animation: pulseGlow 1.5s ease-in-out infinite;
+}
+
+.status-pulse-red {
+  width: 10px;
+  height: 10px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ef4444;
+  animation: pulseGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.7; }
+}
+
+
+

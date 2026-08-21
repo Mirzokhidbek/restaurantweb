@@ -29,7 +29,7 @@ const AdminCategories = () => {
         setCategories(res.data);
       }
     } catch (err) {
-      setError(err.message || 'Failed to load categories.');
+      setError(err.message || 'Kategoriyalarni yuklashda xatolik yuz berdi.');
     } finally {
       setLoading(false);
     }
@@ -69,7 +69,7 @@ const AdminCategories = () => {
       setShowModal(false);
       fetchCategories();
     } catch (err) {
-      setError(err.message || 'Failed to save category.');
+      setError(err.message || 'Kategoriyani saqlashda xatolik yuz berdi.');
     } finally {
       setSaving(false);
     }
@@ -81,7 +81,7 @@ const AdminCategories = () => {
       setDeleteConfirmId(null);
       fetchCategories();
     } catch (err) {
-      setError(err.message || 'Failed to delete category.');
+      setError(err.message || 'Kategoriyani o‘chirishda xatolik yuz berdi.');
     }
   };
 
@@ -89,20 +89,20 @@ const AdminCategories = () => {
     <div className="admin-categories-page">
       <div className="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
         <div>
-          <h2 className="fw-extrabold text-dark mb-1">Category Management</h2>
-          <p className="text-secondary">Create, update, or remove restaurant menu categories.</p>
+          <h2 className="fw-extrabold text-dark mb-1">Kategoriyalar Boshqaruvi</h2>
+          <p className="text-secondary">Yangi taom kategoriyalarini yaratish, tahrirlash yoki o‘chirish.</p>
         </div>
 
         <button onClick={handleOpenCreateModal} className="btn btn-primary-custom px-4 py-2 d-flex align-items-center gap-2">
           <Plus size={18} />
-          <span>Add New Category</span>
+          <span>Yangi Kategoriya Qo‘shish</span>
         </button>
       </div>
 
       {error && <ErrorMessage message={error} />}
 
       {loading ? (
-        <Loading text="Loading food categories..." />
+        <Loading text="Kategoriyalar yuklanmoqda..." />
       ) : (
         <div className="row g-4">
           {categories.map((cat) => (
@@ -121,7 +121,7 @@ const AdminCategories = () => {
 
                 <h5 className="fw-bold text-dark mb-1">{cat.name}</h5>
                 <p className="text-muted small mb-3 text-truncate" style={{ height: '36px' }}>
-                  {cat.description || 'No description provided.'}
+                  {cat.description || 'Tavsif kiritilmagan.'}
                 </p>
 
                 <div className="d-flex justify-content-center gap-2 pt-2 border-top">
@@ -129,13 +129,13 @@ const AdminCategories = () => {
                     onClick={() => handleOpenEditModal(cat)}
                     className="btn btn-outline-primary btn-sm rounded-pill px-3 d-flex align-items-center gap-1"
                   >
-                    <Edit2 size={14} /> Edit
+                    <Edit2 size={14} /> Tahrirlash
                   </button>
                   <button
                     onClick={() => setDeleteConfirmId(cat._id)}
                     className="btn btn-outline-danger btn-sm rounded-pill px-3 d-flex align-items-center gap-1"
                   >
-                    <Trash2 size={14} /> Delete
+                    <Trash2 size={14} /> O‘chirish
                   </button>
                 </div>
               </div>
@@ -149,14 +149,14 @@ const AdminCategories = () => {
         <div className="modal fade show d-block modal-backdrop-custom" tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content rounded-4 p-4 text-center">
-              <h5 className="fw-bold text-dark mb-3">Delete Category</h5>
-              <p className="text-muted mb-4">Are you sure you want to delete this category? Products linked to this category may be affected.</p>
+              <h5 className="fw-bold text-dark mb-3">Kategoriyani O‘chirish</h5>
+              <p className="text-muted mb-4">Ushbu kategoriyani o‘chirmoqchimisiz? Ushbu kategoriyaga bog‘langan taomlarga ta’sir qilishi mumkin.</p>
               <div className="d-flex justify-content-center gap-3">
                 <button className="btn btn-light rounded-pill px-4" onClick={() => setDeleteConfirmId(null)}>
-                  Cancel
+                  Bekor Qilish
                 </button>
                 <button className="btn btn-danger rounded-pill px-4" onClick={() => handleDeleteCategory(deleteConfirmId)}>
-                  Delete Category
+                  O‘chirish
                 </button>
               </div>
             </div>
@@ -171,7 +171,7 @@ const AdminCategories = () => {
             <div className="modal-content rounded-4 p-4">
               <div className="modal-header border-0 pb-0">
                 <h4 className="fw-bold text-dark">
-                  {editingCategory ? 'Edit Category' : 'Add New Category'}
+                  {editingCategory ? 'Kategoriyani Tahrirlash' : 'Yangi Kategoriya Qo‘shish'}
                 </h4>
                 <button className="btn-close" onClick={() => setShowModal(false)}></button>
               </div>
@@ -179,7 +179,7 @@ const AdminCategories = () => {
               <form onSubmit={handleSaveCategory}>
                 <div className="modal-body">
                   <div className="mb-3">
-                    <label className="form-label fw-semibold">Category Name</label>
+                    <label className="form-label fw-semibold">Kategoriya Nomi</label>
                     <input
                       type="text"
                       className="form-control rounded-3"
@@ -190,7 +190,7 @@ const AdminCategories = () => {
                   </div>
 
                   <div className="mb-3">
-                    <label className="form-label fw-semibold">Image URL</label>
+                    <label className="form-label fw-semibold">Rasm Havolasi (URL)</label>
                     <input
                       type="url"
                       className="form-control rounded-3"
@@ -201,7 +201,7 @@ const AdminCategories = () => {
                   </div>
 
                   <div className="mb-3">
-                    <label className="form-label fw-semibold">Description</label>
+                    <label className="form-label fw-semibold">Tavsifi</label>
                     <textarea
                       className="form-control rounded-3"
                       rows="3"
@@ -213,10 +213,10 @@ const AdminCategories = () => {
 
                 <div className="modal-footer border-0 pt-3">
                   <button type="button" className="btn btn-light rounded-pill px-4" onClick={() => setShowModal(false)}>
-                    Cancel
+                    Bekor Qilish
                   </button>
                   <button type="submit" disabled={saving} className="btn btn-primary-custom rounded-pill px-4">
-                    {saving ? 'Saving...' : 'Save Category'}
+                    {saving ? 'Saqlanmoqda...' : 'Kategoriyani Saqlash'}
                   </button>
                 </div>
               </form>
