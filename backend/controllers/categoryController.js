@@ -1,14 +1,23 @@
 import Category from '../models/Category.js';
 
-// @desc    Get all categories
+// @desc    Get all categories (sorted alphabetically by name)
 // @route   GET /api/categories
 // @access  Public
 export const getCategories = async (req, res, next) => {
   try {
-    const categories = await Category.find({}).sort({ createdAt: -1 });
+    const { sort } = req.query;
+    let sortOptions = { name: 1 }; // Default: alphabetical order A-Z
+
+    if (sort === 'newest') {
+      sortOptions = { createdAt: -1 };
+    } else if (sort === 'oldest') {
+      sortOptions = { createdAt: 1 };
+    }
+
+    const categories = await Category.find({}).sort(sortOptions);
     res.json({
       success: true,
-      message: 'Categories retrieved successfully',
+      message: 'Kategoriyalar ro‘yxati muvaffaqiyatli olindi.',
       data: categories,
     });
   } catch (error) {
@@ -25,12 +34,12 @@ export const getCategoryById = async (req, res, next) => {
     if (!category) {
       return res.status(404).json({
         success: false,
-        message: 'Category not found',
+        message: 'Kategoriya topilmadi.',
       });
     }
     res.json({
       success: true,
-      message: 'Category retrieved successfully',
+      message: 'Kategoriya ma’lumotlari olindi.',
       data: category,
     });
   } catch (error) {
@@ -48,7 +57,7 @@ export const createCategory = async (req, res, next) => {
     if (!name) {
       return res.status(400).json({
         success: false,
-        message: 'Category name is required',
+        message: 'Kategoriya nomi majburiy kiritilishi kerak.',
       });
     }
 
@@ -56,7 +65,7 @@ export const createCategory = async (req, res, next) => {
     if (existingCategory) {
       return res.status(400).json({
         success: false,
-        message: 'Category already exists',
+        message: 'Ushbu nomli kategoriya allaqachon mavjud.',
       });
     }
 
@@ -68,7 +77,7 @@ export const createCategory = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: 'Category created successfully',
+      message: 'Kategoriya muvaffaqiyatli yaratildi.',
       data: category,
     });
   } catch (error) {
@@ -87,7 +96,7 @@ export const updateCategory = async (req, res, next) => {
     if (!category) {
       return res.status(404).json({
         success: false,
-        message: 'Category not found',
+        message: 'Kategoriya topilmadi.',
       });
     }
 
@@ -99,7 +108,7 @@ export const updateCategory = async (req, res, next) => {
 
     res.json({
       success: true,
-      message: 'Category updated successfully',
+      message: 'Kategoriya ma’lumotlari muvaffaqiyatli yangilandi.',
       data: updatedCategory,
     });
   } catch (error) {
@@ -117,7 +126,7 @@ export const deleteCategory = async (req, res, next) => {
     if (!category) {
       return res.status(404).json({
         success: false,
-        message: 'Category not found',
+        message: 'Kategoriya topilmadi.',
       });
     }
 
@@ -125,7 +134,7 @@ export const deleteCategory = async (req, res, next) => {
 
     res.json({
       success: true,
-      message: 'Category deleted successfully',
+      message: 'Kategoriya muvaffaqiyatli o‘chirildi.',
       data: {},
     });
   } catch (error) {

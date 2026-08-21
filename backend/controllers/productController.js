@@ -1,11 +1,11 @@
 import Product from '../models/Product.js';
 
-// @desc    Get all products (with optional filtering)
+// @desc    Get all products (with optional filtering & sorting)
 // @route   GET /api/products
 // @access  Public
 export const getProducts = async (req, res, next) => {
   try {
-    const { category, search, popular } = req.query;
+    const { category, search, popular, sort } = req.query;
     let query = {};
 
     if (category && category !== 'All') {
@@ -20,13 +20,27 @@ export const getProducts = async (req, res, next) => {
       query.name = { $regex: search, $options: 'i' };
     }
 
+    // Dynamic Query Sorting
+    let sortOptions = { createdAt: -1 }; // Default: newest first
+    if (sort === 'price_asc') {
+      sortOptions = { price: 1 };
+    } else if (sort === 'price_desc') {
+      sortOptions = { price: -1 };
+    } else if (sort === 'name_asc') {
+      sortOptions = { name: 1 };
+    } else if (sort === 'name_desc') {
+      sortOptions = { name: -1 };
+    } else if (sort === 'popular') {
+      sortOptions = { isPopular: -1, createdAt: -1 };
+    }
+
     const products = await Product.find(query)
       .populate('category', 'name description image')
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
 
     res.json({
       success: true,
-      message: 'Products retrieved successfully',
+      message: 'Taomlar ro‘yxati muvaffaqiyatli olindi.',
       data: products,
     });
   } catch (error) {
@@ -44,13 +58,13 @@ export const getProductById = async (req, res, next) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found',
+        message: 'Taom topilmadi.',
       });
     }
 
     res.json({
       success: true,
-      message: 'Product retrieved successfully',
+      message: 'Taom ma’lumotlari olindi.',
       data: product,
     });
   } catch (error) {
@@ -68,7 +82,7 @@ export const createProduct = async (req, res, next) => {
     if (!name || !description || price === undefined || !image || !category) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide all required product fields',
+        message: 'Iltimos, taomning barcha majburiy maydonlarini to‘ldiring.',
       });
     }
 
@@ -86,7 +100,7 @@ export const createProduct = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: 'Product created successfully',
+      message: 'Taom muvaffaqiyatli yaratildi.',
       data: populatedProduct,
     });
   } catch (error) {
@@ -105,7 +119,7 @@ export const updateProduct = async (req, res, next) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found',
+        message: 'Taom topilmadi.',
       });
     }
 
@@ -122,7 +136,7 @@ export const updateProduct = async (req, res, next) => {
 
     res.json({
       success: true,
-      message: 'Product updated successfully',
+      message: 'Taom ma’lumotlari muvaffaqiyatli yangilandi.',
       data: populatedProduct,
     });
   } catch (error) {
@@ -140,7 +154,7 @@ export const deleteProduct = async (req, res, next) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found',
+        message: 'Taom topilmadi.',
       });
     }
 
@@ -148,7 +162,7 @@ export const deleteProduct = async (req, res, next) => {
 
     res.json({
       success: true,
-      message: 'Product deleted successfully',
+      message: 'Taom muvaffaqiyatli o‘chirildi.',
       data: {},
     });
   } catch (error) {

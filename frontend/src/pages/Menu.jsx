@@ -7,7 +7,7 @@ import ErrorMessage from '../components/ErrorMessage';
 import productService from '../services/productService';
 import categoryService from '../services/categoryService';
 import { useLanguage } from '../context/LanguageContext';
-import { Search, Utensils } from 'lucide-react';
+import { Search, ArrowUpDown, Sparkles } from 'lucide-react';
 
 const Menu = () => {
   const { t } = useLanguage();
@@ -18,6 +18,7 @@ const Menu = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('default');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -27,7 +28,7 @@ const Menu = () => {
       try {
         setLoading(true);
         const [prodRes, catRes] = await Promise.all([
-          productService.getProducts(),
+          productService.getProducts({ sort: sortBy !== 'default' ? sortBy : undefined }),
           categoryService.getCategories(),
         ]);
 
@@ -51,12 +52,12 @@ const Menu = () => {
     };
 
     fetchData();
-  }, [categoryParam]);
+  }, [categoryParam, sortBy]);
 
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
       selectedCategory === 'all' ||
-      (typeof product.category === 'object'
+      (typeof product.category === 'object' && product.category
         ? product.category._id === selectedCategory
         : product.category === selectedCategory);
 
@@ -81,7 +82,7 @@ const Menu = () => {
           </p>
         </div>
 
-        {/* Search & Category Filter Controls */}
+        {/* Search, Sort & Category Controls */}
         <div className="row g-3 justify-content-between align-items-center mb-4">
           <div className="col-12 col-md-5 col-lg-4">
             <div className="input-group bg-white rounded-pill shadow-sm overflow-hidden border border-warning border-opacity-30">
@@ -98,7 +99,27 @@ const Menu = () => {
             </div>
           </div>
 
-          <div className="col-12 col-md-7 col-lg-8">
+          {/* Dynamic Sorting Dropdown */}
+          <div className="col-12 col-md-4 col-lg-3">
+            <div className="input-group bg-white rounded-pill shadow-sm overflow-hidden border border-warning border-opacity-30">
+              <span className="input-group-text border-0 bg-transparent ps-3">
+                <ArrowUpDown size={16} className="text-warning" />
+              </span>
+              <select
+                className="form-select border-0 py-2 shadow-none small fw-bold text-dark"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="default">Saralash: Yangilari bo‘yicha</option>
+                <option value="price_asc">Narx: Arzondan Qimmatga</option>
+                <option value="price_desc">Narx: Qimmatdan Arzon-ga</option>
+                <option value="name_asc">Nomi: A dan Z gacha</option>
+                <option value="popular">Ommabop Taomlar</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="col-12 col-lg-5">
             <div className="d-flex gap-2 overflow-x-auto pb-2 scrollbar-none">
               <button
                 className={`category-pill border-0 ${selectedCategory === 'all' ? 'active' : ''}`}
@@ -119,18 +140,16 @@ const Menu = () => {
           </div>
         </div>
 
-        {/* Product Grid */}
+        {/* Content Display */}
         {loading ? (
-          <Loading text="Barcha taomlar yuklanmoqda..." />
+          <Loading text="Menyu yuklanmoqda..." />
         ) : error ? (
           <ErrorMessage message={error} />
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-5">
-            <div className="p-3 bg-white rounded-circle d-inline-flex mb-3 shadow-sm">
-              <Utensils size={36} className="text-muted" />
-            </div>
-            <h5 className="fw-bold text-dark">{t('noProductsFound')}</h5>
-            <p className="text-muted small">{t('noProductsDesc')}</p>
+            <Utensils size={48} className="text-muted mb-3 opacity-50" />
+            <h4 className="fw-bold text-dark mb-2">Hech qanday taom topilmadi</h4>
+            <p className="text-muted">Qidiruv yoki kategoriya bo‘yicha boshqa variantlarni sinab ko‘ring.</p>
           </div>
         ) : (
           <div className="row g-4">
@@ -141,10 +160,12 @@ const Menu = () => {
             ))}
           </div>
         )}
-      </div>
 
-      {/* Quick Details Modal */}
-      {selectedProduct && <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
+        {/* Product Details Modal */}
+        {selectedProduct && (
+          <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+        )}
+      </div>
     </div>
   );
 };
