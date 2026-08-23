@@ -1,27 +1,45 @@
+/**
+ * FAZO Restorani Namangan - Product (Food Dish) Controller
+ * 
+ * Clean Code Architecture Principles:
+ * - Single Responsibility Principle (SRP): Manages food dish menu inventory CRUD operations.
+ * - Standardized API Response Format: { success: boolean, message: string, data: any }
+ * - Dynamic Query Filtering & Sorting: Supports category, search keyword, popularity, and price sorting.
+ * - Input Sanitization: Explicit string trimming, number type conversion, and category validation.
+ */
+
 import Product from '../models/Product.js';
 
-// @desc    Get all products (with optional filtering & sorting)
-// @route   GET /api/products
-// @access  Public
+/**
+ * @desc    Get all food products with optional category filtering, text search, and dynamic sorting
+ * @route   GET /api/products
+ * @access  Public
+ * @param   {Object} req - Express request object (query: ?category=&search=&popular=&sort=price_asc|price_desc|name_asc|popular)
+ * @param   {Object} res - Express response object
+ * @param   {Function} next - Express next middleware function
+ */
 export const getProducts = async (req, res, next) => {
   try {
     const { category, search, popular, sort } = req.query;
-    let query = {};
+    const query = {};
 
-    if (category && category !== 'All') {
+    // Filter by specific Category ID or Name (excluding 'All' wildcard)
+    if (category && category !== 'All' && category !== 'all') {
       query.category = category;
     }
 
+    // Filter by Popular Highlight flag
     if (popular === 'true') {
       query.isPopular = true;
     }
 
-    if (search) {
-      query.name = { $regex: search, $options: 'i' };
+    // Case-insensitive text search by product name
+    if (search && search.trim() !== '') {
+      query.name = { $regex: search.trim(), $options: 'i' };
     }
 
-    // Dynamic Query Sorting
-    let sortOptions = { createdAt: -1 }; // Default: newest first
+    // Dynamic Query Sorting Options
+    let sortOptions = { createdAt: -1 }; // Default: Newest products first
     if (sort === 'price_asc') {
       sortOptions = { price: 1 };
     } else if (sort === 'price_desc') {
@@ -48,9 +66,14 @@ export const getProducts = async (req, res, next) => {
   }
 };
 
-// @desc    Get product by ID
-// @route   GET /api/products/:id
-// @access  Public
+/**
+ * @desc    Get single food product details by MongoDB ObjectId
+ * @route   GET /api/products/:id
+ * @access  Public
+ * @param   {Object} req - Express request object (params: id)
+ * @param   {Object} res - Express response object
+ * @param   {Function} next - Express next middleware function
+ */
 export const getProductById = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id).populate('category', 'name description image');
@@ -72,14 +95,23 @@ export const getProductById = async (req, res, next) => {
   }
 };
 
-// @desc    Create product
-// @route   POST /api/products
-// @access  Private/Admin
+/**
+ * @desc    Create a new food product dish
+ * @route   POST /api/products
+ * @access  Private / Admin
+ * @param   {Object} req - Express request object (body: name, description, price, image, category, isAvailable, isPopular)
+ * @param   {Object} res - Express response object
+ * @param   {Function} next - Express next middleware function
+ */
 export const createProduct = async (req, res, next) => {
   try {
     const { name, description, price, image, category, isAvailable, isPopular } = req.body;
 
-    if (!name || !description || price === undefined || !image || !category) {
+    const trimmedName = name ? name.trim() : '';
+    const trimmedDesc = description ? description.trim() : '';
+    const trimmedImage = image ? image.trim() : '';
+
+    if (!trimmedName || !trimmedDesc || price === undefined || price === null || !trimmedImage || !category) {
       return res.status(400).json({
         success: false,
         message: 'Iltimos, taomning barcha majburiy maydonlarini to‘ldiring.',
@@ -87,13 +119,13 @@ export const createProduct = async (req, res, next) => {
     }
 
     const product = await Product.create({
-      name,
-      description,
+      name: trimmedName,
+      description: trimmedDesc,
       price: Number(price),
-      image,
+      image: trimmedImage,
       category,
-      isAvailable: isAvailable !== undefined ? isAvailable : true,
-      isPopular: isPopular !== undefined ? isPopular : false,
+      isAvailable: isAvailable !== undefined ? Boolean(isAvailable) : true,
+      isPopular: isPopular !== undefined ? Boolean(isPopular) : false,
     });
 
     const populatedProduct = await Product.findById(product._id).populate('category', 'name');
@@ -108,9 +140,14 @@ export const createProduct = async (req, res, next) => {
   }
 };
 
-// @desc    Update product
-// @route   PUT /api/products/:id
-// @access  Private/Admin
+/**
+ * @desc    Update existing food product dish details
+ * @route   PUT /api/products/:id
+ * @access  Private / Admin
+ * @param   {Object} req - Express request object (params: id, body: name, description, price, image, category, isAvailable, isPopular)
+ * @param   {Object} res - Express response object
+ * @param   {Function} next - Express next middleware function
+ */
 export const updateProduct = async (req, res, next) => {
   try {
     const { name, description, price, image, category, isAvailable, isPopular } = req.body;
@@ -123,13 +160,13 @@ export const updateProduct = async (req, res, next) => {
       });
     }
 
-    product.name = name || product.name;
-    product.description = description || product.description;
-    product.price = price !== undefined ? Number(price) : product.price;
-    product.image = image || product.image;
-    product.category = category || product.category;
-    if (isAvailable !== undefined) product.isAvailable = isAvailable;
-    if (isPopular !== undefined) product.isPopular = isPopular;
+    if (name && name.trim() !== '') product.name = name.trim();
+    if (description && description.trim() !== '') product.description = description.trim();
+    if (price !== undefined && price !== null) product.price = Number(price);
+    if (image && image.trim() !== '') product.image = image.trim();
+    if (category) product.category = category;
+    if (isAvailable !== undefined) product.isAvailable = Boolean(isAvailable);
+    if (isPopular !== undefined) product.isPopular = Boolean(isPopular);
 
     const updatedProduct = await product.save();
     const populatedProduct = await Product.findById(updatedProduct._id).populate('category', 'name');
@@ -144,9 +181,14 @@ export const updateProduct = async (req, res, next) => {
   }
 };
 
-// @desc    Delete product
-// @route   DELETE /api/products/:id
-// @access  Private/Admin
+/**
+ * @desc    Delete food product dish by MongoDB ObjectId
+ * @route   DELETE /api/products/:id
+ * @access  Private / Admin
+ * @param   {Object} req - Express request object (params: id)
+ * @param   {Object} res - Express response object
+ * @param   {Function} next - Express next middleware function
+ */
 export const deleteProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
