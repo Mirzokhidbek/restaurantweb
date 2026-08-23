@@ -2,16 +2,13 @@ import React, { useState, useEffect } from 'react';
 import {
   MessageSquare,
   Search,
-  Filter,
   CheckCircle2,
   Clock,
   Trash2,
   Phone,
   Mail,
   User,
-  AlertCircle,
-  Sparkles,
-  Send,
+  HelpCircle,
 } from 'lucide-react';
 import messageService from '../services/messageService';
 import Loading from '../components/Loading';
@@ -26,8 +23,6 @@ const AdminMessages = () => {
   const [error, setError] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedMessage, setSelectedMessage] = useState(null);
-  const [adminReplyText, setAdminReplyText] = useState('');
 
   const fetchMessages = async () => {
     try {
@@ -53,7 +48,7 @@ const AdminMessages = () => {
       const res = await messageService.updateMessageStatus(msgId, { status: newStatus });
       if (res.success) {
         toast.success(
-          newStatus === 'resolved' ? 'Murojaat hal qilindi deb belgilandi!' : 'Murojaat kutilayotgan holatga o‘tkazildi',
+          newStatus === 'resolved' ? 'Murojaat "Hal Qilindi" holatiga o‘tkazildi!' : 'Murojaat "Kutilmoqda" holatiga o‘tkazildi',
           'Status Yangilandi'
         );
         setMessages((prev) =>
@@ -78,31 +73,6 @@ const AdminMessages = () => {
     }
   };
 
-  const handleSaveReply = async (e) => {
-    e.preventDefault();
-    if (!selectedMessage) return;
-    try {
-      const res = await messageService.updateMessageStatus(selectedMessage._id, {
-        status: 'resolved',
-        adminReply: adminReplyText,
-      });
-      if (res.success) {
-        toast.success('Mijozga javob muvaffaqiyatli saqlandi va status hal qilindi!', 'Javob Yuborildi');
-        setMessages((prev) =>
-          prev.map((m) =>
-            m._id === selectedMessage._id
-              ? { ...m, status: 'resolved', adminReply: adminReplyText }
-              : m
-          )
-        );
-        setSelectedMessage(null);
-        setAdminReplyText('');
-      }
-    } catch (err) {
-      toast.error(err.message || 'Javobni saqlashda xatolik', 'Xatolik');
-    }
-  };
-
   const filteredMessages = messages.filter((msg) => {
     const matchesStatus = filterStatus === 'all' || msg.status === filterStatus;
     const matchesSearch =
@@ -119,15 +89,15 @@ const AdminMessages = () => {
 
   return (
     <div className="admin-messages-page animate-fade-in">
-      {/* Page Title Header */}
+      {/* Page Header */}
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
         <div>
           <h2 className="fw-extrabold text-dark font-heading mb-1 d-flex align-items-center gap-2">
             <MessageSquare className="text-warning" size={28} />
-            <span>Mijozlar Murojaatlari & Chat</span>
+            <span>Mijozlar Murojaatlari</span>
           </h2>
           <p className="text-muted small mb-0">
-            Mijozlardan kelgan barcha savollar, muammolar va murojaatlarni real-vaqtda boshqarish.
+            Mijozlar tomonidan yuborilgan barcha savollar va muammoli murojaatlar ro‘yxati.
           </p>
         </div>
       </div>
@@ -142,7 +112,7 @@ const AdminMessages = () => {
                 <h3 className="fw-extrabold text-dark mb-0 font-heading">{totalCount}</h3>
               </div>
               <div className="p-3 bg-warning bg-opacity-15 text-warning rounded-circle">
-                <MessageSquare size={22} />
+                <HelpCircle size={24} />
               </div>
             </div>
           </div>
@@ -152,11 +122,11 @@ const AdminMessages = () => {
           <div className="card border-0 rounded-4 shadow-sm bg-white p-3 border-start border-4 border-danger">
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="text-muted small fw-bold">Kutilmoqda (Javobsiz)</span>
+                <span className="text-muted small fw-bold">Kutilmoqda</span>
                 <h3 className="fw-extrabold text-danger mb-0 font-heading">{pendingCount}</h3>
               </div>
               <div className="p-3 bg-danger bg-opacity-15 text-danger rounded-circle">
-                <Clock size={22} />
+                <Clock size={24} />
               </div>
             </div>
           </div>
@@ -170,14 +140,14 @@ const AdminMessages = () => {
                 <h3 className="fw-extrabold text-success mb-0 font-heading">{resolvedCount}</h3>
               </div>
               <div className="p-3 bg-success bg-opacity-15 text-success rounded-circle">
-                <CheckCircle2 size={22} />
+                <CheckCircle2 size={24} />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
+      {/* Search Bar & Filter Buttons */}
       <div className="card border-0 rounded-4 shadow-sm bg-white p-3 mb-4">
         <div className="row g-3 align-items-center justify-content-between">
           <div className="col-12 col-md-5">
@@ -218,7 +188,7 @@ const AdminMessages = () => {
         </div>
       </div>
 
-      {/* Content Display */}
+      {/* Messages Data Table */}
       {loading ? (
         <Loading text="Murojaatlar yuklanmoqda..." />
       ) : error ? (
@@ -227,7 +197,7 @@ const AdminMessages = () => {
         <div className="card border-0 rounded-4 shadow-sm bg-white p-5 text-center">
           <MessageSquare size={48} className="text-muted opacity-50 mb-3 mx-auto" />
           <h5 className="fw-bold text-dark mb-1">Hech qanday murojaat topilmadi</h5>
-          <p className="text-muted small mb-0">Hozirda tanlangan parametrlar bo‘yicha murojaatlar mavjud emas.</p>
+          <p className="text-muted small mb-0">Tanlangan Filtr bo‘yicha murojaatlar mavjud emas.</p>
         </div>
       ) : (
         <div className="card border-0 rounded-4 shadow-sm bg-white overflow-hidden">
@@ -245,57 +215,56 @@ const AdminMessages = () => {
               </thead>
               <tbody>
                 {filteredMessages.map((msg) => {
-                  const createdDate = new Date(msg.createdAt).toLocaleString('uz-UZ', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  });
+                  const dateObj = new Date(msg.createdAt);
+                  const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}.${String(
+                    dateObj.getMonth() + 1
+                  ).padStart(2, '0')}.${dateObj.getFullYear()}, ${String(
+                    dateObj.getHours()
+                  ).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
 
                   return (
                     <tr key={msg._id}>
+                      {/* Customer Info */}
                       <td className="ps-4 py-3">
-                        <div className="d-flex align-items-center gap-2">
+                        <div className="d-flex align-items-center gap-3">
                           <div className="bg-warning bg-opacity-15 text-dark p-2 rounded-circle fw-bold">
                             <User size={18} />
                           </div>
                           <div>
                             <div className="fw-bold text-dark">{msg.senderName}</div>
                             <div className="small text-muted d-flex align-items-center gap-1">
-                              <Phone size={12} /> {msg.senderPhone}
+                              <Phone size={12} className="text-muted" /> {msg.senderPhone}
                             </div>
                             {msg.senderEmail && (
                               <div className="small text-muted d-flex align-items-center gap-1">
-                                <Mail size={12} /> {msg.senderEmail}
+                                <Mail size={12} className="text-muted" /> {msg.senderEmail}
                               </div>
                             )}
                           </div>
                         </div>
                       </td>
 
+                      {/* Problem Category / Subject */}
                       <td>
-                        <span className="badge bg-secondary bg-opacity-10 text-dark border px-2 py-1 rounded-pill fw-bold">
+                        <span className="badge bg-secondary bg-opacity-10 text-dark border border-secondary border-opacity-25 px-3 py-2 rounded-pill fw-bold">
                           {msg.subject}
                         </span>
                       </td>
 
+                      {/* Message Text */}
                       <td>
                         <div
                           className="text-dark small fw-medium text-wrap"
-                          style={{ maxWidth: '320px', lineHeight: '1.4' }}
+                          style={{ maxWidth: '340px', lineHeight: '1.5' }}
                         >
                           {msg.messageText}
                         </div>
-                        {msg.adminReply && (
-                          <div className="mt-1 p-2 rounded-3 bg-light border-start border-3 border-warning small text-secondary">
-                            <strong>Javobingiz:</strong> {msg.adminReply}
-                          </div>
-                        )}
                       </td>
 
-                      <td className="small text-muted fw-medium">{createdDate}</td>
+                      {/* Clean Timestamp */}
+                      <td className="small text-secondary fw-semibold">{formattedDate}</td>
 
+                      {/* Status Badge */}
                       <td>
                         {msg.status === 'resolved' ? (
                           <span className="badge bg-success bg-opacity-15 text-success border border-success border-opacity-30 px-3 py-2 rounded-pill fw-bold d-inline-flex align-items-center gap-1">
@@ -308,25 +277,24 @@ const AdminMessages = () => {
                         )}
                       </td>
 
+                      {/* Action Buttons */}
                       <td className="pe-4 text-end">
-                        <div className="d-flex align-items-center justify-content-end gap-1">
+                        <div className="d-flex align-items-center justify-content-end gap-2">
                           <button
-                            className={`btn btn-sm ${msg.status === 'resolved' ? 'btn-outline-secondary' : 'btn-success'} rounded-circle p-2`}
-                            title={msg.status === 'resolved' ? 'Kutilayotgan holatga o‘tkazish' : 'Hal qilindi deb belgilash'}
+                            className={`btn btn-sm ${
+                              msg.status === 'resolved'
+                                ? 'btn-outline-secondary'
+                                : 'btn-success text-white fw-bold'
+                            } rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1`}
+                            title={
+                              msg.status === 'resolved'
+                                ? 'Kutilayotgan holatga qaytarish'
+                                : 'Hal qilindi deb belgilash'
+                            }
                             onClick={() => handleToggleStatus(msg._id, msg.status)}
                           >
-                            <CheckCircle2 size={16} />
-                          </button>
-
-                          <button
-                            className="btn btn-sm btn-outline-warning text-dark rounded-circle p-2"
-                            title="Javob qaytarish"
-                            onClick={() => {
-                              setSelectedMessage(msg);
-                              setAdminReplyText(msg.adminReply || '');
-                            }}
-                          >
-                            <Send size={16} />
+                            <CheckCircle2 size={14} />
+                            <span>{msg.status === 'resolved' ? 'Qaytarish' : 'Hal Qilindi'}</span>
                           </button>
 
                           <button
@@ -343,59 +311,6 @@ const AdminMessages = () => {
                 })}
               </tbody>
             </table>
-          </div>
-        </div>
-      )}
-
-      {/* Reply Modal */}
-      {selectedMessage && (
-        <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
-              <div className="modal-header bg-dark text-white">
-                <h5 className="modal-title fw-bold font-heading">
-                  💬 {selectedMessage.senderName} ga Javob Qaytarish
-                </h5>
-                <button
-                  className="btn-close btn-close-white"
-                  onClick={() => setSelectedMessage(null)}
-                ></button>
-              </div>
-
-              <form onSubmit={handleSaveReply}>
-                <div className="modal-body p-4">
-                  <div className="p-3 bg-light rounded-3 mb-3 border">
-                    <div className="fw-bold text-muted small mb-1">Mijoz Xabari:</div>
-                    <div className="text-dark font-monospace small">{selectedMessage.messageText}</div>
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label fw-bold text-dark small">Admin Javobi</label>
-                    <textarea
-                      className="form-control rounded-3"
-                      rows="4"
-                      placeholder="Mijoz uchun javob matnini kiriting..."
-                      required
-                      value={adminReplyText}
-                      onChange={(e) => setAdminReplyText(e.target.value)}
-                    ></textarea>
-                  </div>
-                </div>
-
-                <div className="modal-footer bg-light">
-                  <button
-                    type="button"
-                    className="btn btn-secondary rounded-pill px-4"
-                    onClick={() => setSelectedMessage(null)}
-                  >
-                    Bekor Qilish
-                  </button>
-                  <button type="submit" className="btn btn-warning rounded-pill px-4 fw-bold text-white">
-                    Javobni Saqlash va Hal Qilish
-                  </button>
-                </div>
-              </form>
-            </div>
           </div>
         </div>
       )}

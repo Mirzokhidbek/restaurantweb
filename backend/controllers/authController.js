@@ -16,7 +16,18 @@ export const loginUser = async (req, res, next) => {
       });
     }
 
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
+
+    // Fallback auto-seed for default admin credentials if DB is fresh
+    if (!user && email.trim() === 'admin@restaurant.com' && password === 'admin123') {
+      user = await User.create({
+        name: 'FAZO Admin',
+        email: 'admin@restaurant.com',
+        password: 'admin123',
+        role: 'admin',
+        phone: '+998 77 301 00 05',
+      });
+    }
 
     if (user && (await user.matchPassword(password))) {
       res.json({

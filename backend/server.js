@@ -8,9 +8,9 @@
  * - Modular Route Controllers & Middleware
  */
 
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
@@ -26,10 +26,7 @@ import bookmarkRoutes from './routes/bookmarkRoutes.js';
 import settingRoutes from './routes/settingRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 
-// Initialize Environment Variables
-dotenv.config();
-
-// Connect Database (MongoDB Atlas / Local Fallback)
+// Connect Database (MongoDB Atlas)
 connectDB();
 
 const app = express();
