@@ -9,6 +9,8 @@ import {
   Mail,
   User,
   HelpCircle,
+  RotateCcw,
+  Check,
 } from 'lucide-react';
 import messageService from '../services/messageService';
 import Loading from '../components/Loading';
@@ -48,7 +50,7 @@ const AdminMessages = () => {
       const res = await messageService.updateMessageStatus(msgId, { status: newStatus });
       if (res.success) {
         toast.success(
-          newStatus === 'resolved' ? 'Murojaat "Hal Qilindi" holatiga o‘tkazildi!' : 'Murojaat "Kutilmoqda" holatiga o‘tkazildi',
+          newStatus === 'resolved' ? 'Murojaat "Hal Qilindi" deb belgilandi!' : 'Murojaat "Kutilmoqda" holatiga o‘tkazildi',
           'Status Yangilandi'
         );
         setMessages((prev) =>
@@ -70,6 +72,21 @@ const AdminMessages = () => {
       }
     } catch (err) {
       toast.error(err.message || 'O‘chirishda xatolik yuz berdi', 'Xatolik');
+    }
+  };
+
+  const getSubjectBadgeStyle = (subject) => {
+    switch (subject) {
+      case 'Buyurtma bo‘yicha':
+        return 'bg-primary bg-opacity-10 text-primary border-primary border-opacity-30';
+      case 'Yetkazib berish':
+        return 'bg-warning bg-opacity-20 text-dark border-warning border-opacity-40';
+      case 'To‘lov':
+        return 'bg-info bg-opacity-10 text-info border-info border-opacity-30';
+      case 'Sifat va Taklif':
+        return 'bg-success bg-opacity-10 text-success border-success border-opacity-30';
+      default:
+        return 'bg-secondary bg-opacity-10 text-secondary border-secondary border-opacity-30';
     }
   };
 
@@ -111,7 +128,7 @@ const AdminMessages = () => {
                 <span className="text-muted small fw-bold">Jami Murojaatlar</span>
                 <h3 className="fw-extrabold text-dark mb-0 font-heading">{totalCount}</h3>
               </div>
-              <div className="p-3 bg-warning bg-opacity-15 text-warning rounded-circle">
+              <div className="p-3 bg-warning bg-opacity-15 text-warning rounded-circle d-flex align-items-center justify-content-center" style={{ width: '48px', height: '48px' }}>
                 <HelpCircle size={24} />
               </div>
             </div>
@@ -125,7 +142,7 @@ const AdminMessages = () => {
                 <span className="text-muted small fw-bold">Kutilmoqda</span>
                 <h3 className="fw-extrabold text-danger mb-0 font-heading">{pendingCount}</h3>
               </div>
-              <div className="p-3 bg-danger bg-opacity-15 text-danger rounded-circle">
+              <div className="p-3 bg-danger bg-opacity-15 text-danger rounded-circle d-flex align-items-center justify-content-center" style={{ width: '48px', height: '48px' }}>
                 <Clock size={24} />
               </div>
             </div>
@@ -139,7 +156,7 @@ const AdminMessages = () => {
                 <span className="text-muted small fw-bold">Hal Qilindi</span>
                 <h3 className="fw-extrabold text-success mb-0 font-heading">{resolvedCount}</h3>
               </div>
-              <div className="p-3 bg-success bg-opacity-15 text-success rounded-circle">
+              <div className="p-3 bg-success bg-opacity-15 text-success rounded-circle d-flex align-items-center justify-content-center" style={{ width: '48px', height: '48px' }}>
                 <CheckCircle2 size={24} />
               </div>
             </div>
@@ -222,16 +239,18 @@ const AdminMessages = () => {
                     dateObj.getHours()
                   ).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
 
+                  const isResolved = msg.status === 'resolved';
+
                   return (
                     <tr key={msg._id}>
                       {/* Customer Info */}
                       <td className="ps-4 py-3">
                         <div className="d-flex align-items-center gap-3">
-                          <div className="bg-warning bg-opacity-15 text-dark p-2 rounded-circle fw-bold">
-                            <User size={18} />
+                          <div className="bg-warning bg-opacity-15 text-dark p-2 rounded-circle fw-bold d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
+                            <User size={20} />
                           </div>
                           <div>
-                            <div className="fw-bold text-dark">{msg.senderName}</div>
+                            <div className="fw-extrabold text-dark">{msg.senderName}</div>
                             <div className="small text-muted d-flex align-items-center gap-1">
                               <Phone size={12} className="text-muted" /> {msg.senderPhone}
                             </div>
@@ -246,7 +265,7 @@ const AdminMessages = () => {
 
                       {/* Problem Category / Subject */}
                       <td>
-                        <span className="badge bg-secondary bg-opacity-10 text-dark border border-secondary border-opacity-25 px-3 py-2 rounded-pill fw-bold">
+                        <span className={`badge border px-3 py-2 rounded-pill fw-bold ${getSubjectBadgeStyle(msg.subject)}`}>
                           {msg.subject}
                         </span>
                       </td>
@@ -264,15 +283,17 @@ const AdminMessages = () => {
                       {/* Clean Timestamp */}
                       <td className="small text-secondary fw-semibold">{formattedDate}</td>
 
-                      {/* Status Badge */}
+                      {/* Explicit Readable Status Badge */}
                       <td>
-                        {msg.status === 'resolved' ? (
-                          <span className="badge bg-success bg-opacity-15 text-success border border-success border-opacity-30 px-3 py-2 rounded-pill fw-bold d-inline-flex align-items-center gap-1">
-                            <CheckCircle2 size={14} /> Hal Qilindi
+                        {isResolved ? (
+                          <span className="badge bg-success bg-opacity-15 text-success border border-success border-opacity-30 px-3 py-2 rounded-pill fw-extrabold d-inline-flex align-items-center gap-1">
+                            <CheckCircle2 size={15} />
+                            <span>Hal Qilindi</span>
                           </span>
                         ) : (
-                          <span className="badge bg-danger bg-opacity-15 text-danger border border-danger border-opacity-30 px-3 py-2 rounded-pill fw-bold d-inline-flex align-items-center gap-1">
-                            <Clock size={14} /> Kutilmoqda
+                          <span className="badge bg-danger bg-opacity-15 text-danger border border-danger border-opacity-30 px-3 py-2 rounded-pill fw-extrabold d-inline-flex align-items-center gap-1">
+                            <Clock size={15} />
+                            <span>Kutilmoqda</span>
                           </span>
                         )}
                       </td>
@@ -282,27 +303,36 @@ const AdminMessages = () => {
                         <div className="d-flex align-items-center justify-content-end gap-2">
                           <button
                             className={`btn btn-sm ${
-                              msg.status === 'resolved'
+                              isResolved
                                 ? 'btn-outline-secondary'
-                                : 'btn-success text-white fw-bold'
-                            } rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1`}
+                                : 'btn-success text-white fw-bold shadow-sm'
+                            } rounded-pill px-3 py-1.5 d-inline-flex align-items-center gap-1`}
                             title={
-                              msg.status === 'resolved'
+                              isResolved
                                 ? 'Kutilayotgan holatga qaytarish'
-                                : 'Hal qilindi deb belgilash'
+                                : 'Murojaatni hal qilindi deb belgilash'
                             }
                             onClick={() => handleToggleStatus(msg._id, msg.status)}
                           >
-                            <CheckCircle2 size={14} />
-                            <span>{msg.status === 'resolved' ? 'Qaytarish' : 'Hal Qilindi'}</span>
+                            {isResolved ? (
+                              <>
+                                <RotateCcw size={14} />
+                                <span>Qaytarish</span>
+                              </>
+                            ) : (
+                              <>
+                                <Check size={14} />
+                                <span>Hal Qilindi</span>
+                              </>
+                            )}
                           </button>
 
                           <button
                             className="btn btn-sm btn-outline-danger rounded-circle p-2"
-                            title="O‘chirish"
+                            title="Murojaatni o‘chirish"
                             onClick={() => handleDelete(msg._id)}
                           >
-                            <Trash2 size={16} />
+                            <Trash2 size={15} />
                           </button>
                         </div>
                       </td>
