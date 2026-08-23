@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, X, Send, Headset, CheckCircle2, ShieldCheck, Sparkles, HelpCircle } from 'lucide-react';
+import {
+  X,
+  Send,
+  Headset,
+  CheckCircle2,
+  User,
+  Phone,
+  HelpCircle,
+  MessageSquare,
+  Sparkles,
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import messageService from '../services/messageService';
@@ -95,31 +105,31 @@ const CustomerChatWidget = () => {
         </button>
       )}
 
-      {/* Advanced Chat Window Modal */}
+      {/* Advanced Glassmorphic Chat Window Modal */}
       {isOpen && (
         <div
           className="card border-0 rounded-4 shadow-lg overflow-hidden bg-white animate-fade-in"
           style={{
-            width: '370px',
+            width: '380px',
             maxWidth: '92vw',
-            maxHeight: '580px',
-            boxShadow: '0 20px 50px rgba(15, 23, 42, 0.3)',
+            maxHeight: '600px',
+            boxShadow: '0 25px 60px rgba(15, 23, 42, 0.35)',
           }}
         >
-          {/* Header */}
+          {/* Premium Header */}
           <div
             className="p-3.5 px-4 text-white d-flex align-items-center justify-content-between border-bottom border-warning border-opacity-25"
             style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}
           >
             <div className="d-flex align-items-center gap-3">
-              <div className="bg-warning text-dark p-2 rounded-circle shadow-sm d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
+              <div className="bg-warning text-dark p-2 rounded-circle shadow-sm d-flex align-items-center justify-content-center" style={{ width: '42px', height: '42px' }}>
                 <Headset size={22} />
               </div>
               <div>
                 <h6 className="fw-extrabold text-white mb-0 font-heading" style={{ fontSize: '1rem' }}>
                   FAZO Restorani Yordam
                 </h6>
-                <small className="text-warning small d-flex align-items-center gap-1.5" style={{ fontSize: '0.74rem' }}>
+                <small className="text-warning small d-flex align-items-center gap-1.5" style={{ fontSize: '0.75rem' }}>
                   <span className="spinner-grow spinner-grow-sm text-warning" style={{ width: '7px', height: '7px' }}></span>
                   24/7 Qo‘llab-quvvatlash Xizmati
                 </small>
@@ -135,7 +145,7 @@ const CustomerChatWidget = () => {
           </div>
 
           {/* Body Form */}
-          <div className="p-4 overflow-y-auto" style={{ maxHeight: '490px' }}>
+          <div className="p-4 overflow-y-auto" style={{ maxHeight: '510px' }}>
             {sentSuccess ? (
               <div className="text-center py-4 px-2">
                 <div className="bg-success bg-opacity-15 text-success p-3 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '64px', height: '64px' }}>
@@ -148,57 +158,91 @@ const CustomerChatWidget = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
+                {/* Subject Selector */}
                 <div className="mb-3">
-                  <label className="form-label small fw-bold text-dark mb-1">Muammo Turi</label>
-                  <select
-                    className="form-select rounded-3 fw-semibold text-dark shadow-sm border-warning border-opacity-30"
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  >
-                    <option value="Buyurtma bo‘yicha">🛍️ Buyurtma bo‘yicha</option>
-                    <option value="Yetkazib berish">🛵 Yetkazib berish</option>
-                    <option value="To‘lov">💳 To‘lov masalasi</option>
-                    <option value="Sifat va Taklif">⭐ Sifat va Taklif</option>
-                    <option value="Boshqa">❓ Boshqa savol</option>
-                  </select>
+                  <label className="form-label small fw-extrabold text-dark mb-1 d-flex align-items-center gap-1">
+                    <HelpCircle size={14} className="text-warning" />
+                    <span>Muammo Turi</span>
+                  </label>
+                  <div className="input-group rounded-3 overflow-hidden border">
+                    <span className="input-group-text border-0 bg-light text-warning ps-3">
+                      <HelpCircle size={16} />
+                    </span>
+                    <select
+                      className="form-select border-0 bg-light py-2 shadow-none small fw-bold text-dark"
+                      value={formData.subject}
+                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    >
+                      <option value="Buyurtma bo‘yicha">🛍️ Buyurtma bo‘yicha</option>
+                      <option value="Yetkazib berish">🛵 Yetkazib berish</option>
+                      <option value="To‘lov">💳 To‘lov masalasi</option>
+                      <option value="Sifat va Taklif">⭐ Sifat va Taklif</option>
+                      <option value="Boshqa">❓ Boshqa savol</option>
+                    </select>
+                  </div>
                 </div>
 
+                {/* Sender Name */}
                 <div className="mb-3">
-                  <label className="form-label small fw-bold text-dark mb-1">Ismingiz</label>
-                  <input
-                    type="text"
-                    className="form-control rounded-3 shadow-sm border-warning border-opacity-30"
-                    placeholder="Ismingizni kiriting"
-                    required
-                    value={formData.senderName}
-                    onChange={(e) => setFormData({ ...formData, senderName: e.target.value })}
-                  />
+                  <label className="form-label small fw-extrabold text-dark mb-1 d-flex align-items-center gap-1">
+                    <User size={14} className="text-warning" />
+                    <span>Ismingiz</span>
+                  </label>
+                  <div className="input-group rounded-3 overflow-hidden border">
+                    <span className="input-group-text border-0 bg-light text-warning ps-3">
+                      <User size={16} />
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control border-0 bg-light py-2 shadow-none small fw-medium"
+                      placeholder="Ismingizni kiriting"
+                      required
+                      value={formData.senderName}
+                      onChange={(e) => setFormData({ ...formData, senderName: e.target.value })}
+                    />
+                  </div>
                 </div>
 
+                {/* Sender Phone */}
                 <div className="mb-3">
-                  <label className="form-label small fw-bold text-dark mb-1">Telefon Raqamingiz</label>
-                  <input
-                    type="tel"
-                    className="form-control rounded-3 shadow-sm border-warning border-opacity-30"
-                    placeholder="+998 90 123 45 67"
-                    required
-                    value={formData.senderPhone}
-                    onChange={(e) => setFormData({ ...formData, senderPhone: e.target.value })}
-                  />
+                  <label className="form-label small fw-extrabold text-dark mb-1 d-flex align-items-center gap-1">
+                    <Phone size={14} className="text-warning" />
+                    <span>Telefon Raqamingiz</span>
+                  </label>
+                  <div className="input-group rounded-3 overflow-hidden border">
+                    <span className="input-group-text border-0 bg-light text-warning ps-3">
+                      <Phone size={16} />
+                    </span>
+                    <input
+                      type="tel"
+                      className="form-control border-0 bg-light py-2 shadow-none small fw-medium"
+                      placeholder="+998 90 123 45 67"
+                      required
+                      value={formData.senderPhone}
+                      onChange={(e) => setFormData({ ...formData, senderPhone: e.target.value })}
+                    />
+                  </div>
                 </div>
 
+                {/* Message Textarea */}
                 <div className="mb-4">
-                  <label className="form-label small fw-bold text-dark mb-1">Muammo Tavsifi</label>
-                  <textarea
-                    className="form-control rounded-3 shadow-sm border-warning border-opacity-30"
-                    rows="3"
-                    placeholder="Duch kelgan muammoingiz yoki savolingizni batafsil yozing..."
-                    required
-                    value={formData.messageText}
-                    onChange={(e) => setFormData({ ...formData, messageText: e.target.value })}
-                  ></textarea>
+                  <label className="form-label small fw-extrabold text-dark mb-1 d-flex align-items-center gap-1">
+                    <MessageSquare size={14} className="text-warning" />
+                    <span>Muammo Tavsifi</span>
+                  </label>
+                  <div className="input-group rounded-3 overflow-hidden border">
+                    <textarea
+                      className="form-control border-0 bg-light p-3 shadow-none small fw-medium"
+                      rows="3"
+                      placeholder="Duch kelgan muammoingiz yoki savolingizni batafsil yozing..."
+                      required
+                      value={formData.messageText}
+                      onChange={(e) => setFormData({ ...formData, messageText: e.target.value })}
+                    ></textarea>
+                  </div>
                 </div>
 
+                {/* 3D Submit Button */}
                 <button
                   type="submit"
                   disabled={loading}
