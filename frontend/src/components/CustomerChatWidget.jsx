@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, X, Send, Headset, CheckCircle2, ShieldCheck, Sparkles, AlertCircle } from 'lucide-react';
+import { MessageSquare, X, Send, Headset, CheckCircle2, ShieldCheck, Sparkles, HelpCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import messageService from '../services/messageService';
@@ -43,8 +43,8 @@ const CustomerChatWidget = () => {
 
       setSentSuccess(true);
       toast.success(
-        'Murojaatingiz qabul qilindi! Menejerimiz tez orada javob beradi.',
-        '💬 Xabar Yuborildi'
+        'Murojaatingiz qabul qilindi! Menejerimiz tez orada bog‘lanadi.',
+        'Xabar Yuborildi'
       );
 
       setFormData((prev) => ({
@@ -54,7 +54,7 @@ const CustomerChatWidget = () => {
 
       setTimeout(() => {
         setSentSuccess(false);
-      }, 4000);
+      }, 4500);
     } catch (err) {
       toast.error(err.message || 'Xabar yuborishda xatolik yuz berdi.', 'Xatolik');
     } finally {
@@ -63,74 +63,95 @@ const CustomerChatWidget = () => {
   };
 
   return (
-    <div className="customer-chat-widget position-fixed bottom-0 end-0 p-3 p-md-4 z-3" style={{ zIndex: 1050 }}>
-      {/* Floating Trigger Button */}
+    <div className="customer-chat-widget position-fixed bottom-0 end-0 p-3 p-md-4" style={{ zIndex: 1050 }}>
+      {/* Advanced 3D Floating Support Trigger Button */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="btn btn-warning rounded-pill px-4 py-3 shadow-lg fw-extrabold text-dark d-flex align-items-center gap-2 border border-2 border-white transition-transform hover-lift"
+          className="btn rounded-pill px-4 py-3 shadow-lg fw-extrabold text-white d-flex align-items-center gap-3 border border-2 border-warning border-opacity-40 transition-transform hover-lift"
           style={{
-            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-            boxShadow: '0 8px 25px rgba(245, 158, 11, 0.45)',
+            background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+            boxShadow: '0 12px 35px rgba(15, 23, 42, 0.4), 0 0 20px rgba(245, 158, 11, 0.3)',
+            backdropFilter: 'blur(10px)',
           }}
         >
-          <div className="position-relative">
-            <MessageSquare size={22} className="text-white" />
+          {/* Icon Container with Pulsing Online LED Dot */}
+          <div className="position-relative d-flex align-items-center justify-content-center bg-warning text-dark p-2 rounded-circle shadow-sm" style={{ width: '38px', height: '38px' }}>
+            <Headset size={20} className="text-dark" />
             <span
-              className="position-absolute top-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle"
-              style={{ width: '10px', height: '10px' }}
+              className="position-absolute top-0 start-100 translate-middle p-1 bg-success border border-white rounded-circle shadow-sm"
+              style={{ width: '11px', height: '11px' }}
             ></span>
           </div>
-          <span className="text-white fs-6 font-heading ms-1">💬 Yordam & Chat</span>
+
+          <div className="d-flex flex-column text-start">
+            <span className="text-white fw-extrabold fs-6 font-heading" style={{ letterSpacing: '0.3px' }}>
+              Yordam & Chat
+            </span>
+            <small className="text-warning opacity-90 fw-semibold" style={{ fontSize: '0.72rem' }}>
+              🟢 Operator Onlayn
+            </small>
+          </div>
         </button>
       )}
 
-      {/* Chat Window Modal */}
+      {/* Advanced Chat Window Modal */}
       {isOpen && (
         <div
           className="card border-0 rounded-4 shadow-lg overflow-hidden bg-white animate-fade-in"
-          style={{ width: '360px', maxWidth: '90vw', maxHeight: '550px' }}
+          style={{
+            width: '370px',
+            maxWidth: '92vw',
+            maxHeight: '580px',
+            boxShadow: '0 20px 50px rgba(15, 23, 42, 0.3)',
+          }}
         >
           {/* Header */}
           <div
-            className="p-3 text-white d-flex align-items-center justify-content-between"
+            className="p-3.5 px-4 text-white d-flex align-items-center justify-content-between border-bottom border-warning border-opacity-25"
             style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}
           >
-            <div className="d-flex align-items-center gap-2">
-              <div className="bg-warning text-dark p-2 rounded-circle">
-                <Headset size={20} />
+            <div className="d-flex align-items-center gap-3">
+              <div className="bg-warning text-dark p-2 rounded-circle shadow-sm d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
+                <Headset size={22} />
               </div>
               <div>
-                <h6 className="fw-extrabold mb-0 font-heading">FAZO Restorani Yordam</h6>
-                <small className="text-success small d-flex align-items-center gap-1" style={{ fontSize: '0.75rem' }}>
-                  <span className="spinner-grow spinner-grow-sm text-success" style={{ width: '8px', height: '8px' }}></span>
-                  Onlayn (Admin Faol)
+                <h6 className="fw-extrabold text-white mb-0 font-heading" style={{ fontSize: '1rem' }}>
+                  FAZO Restorani Yordam
+                </h6>
+                <small className="text-warning small d-flex align-items-center gap-1.5" style={{ fontSize: '0.74rem' }}>
+                  <span className="spinner-grow spinner-grow-sm text-warning" style={{ width: '7px', height: '7px' }}></span>
+                  24/7 Qo‘llab-quvvatlash Xizmati
                 </small>
               </div>
             </div>
-            <button className="btn btn-sm text-white-50 border-0" onClick={() => setIsOpen(false)}>
+
+            <button
+              className="btn btn-sm btn-outline-light text-white-50 border-0 rounded-circle p-1.5 transition-all"
+              onClick={() => setIsOpen(false)}
+            >
               <X size={20} />
             </button>
           </div>
 
           {/* Body Form */}
-          <div className="p-3 overflow-y-auto" style={{ maxHeight: '460px' }}>
+          <div className="p-4 overflow-y-auto" style={{ maxHeight: '490px' }}>
             {sentSuccess ? (
               <div className="text-center py-4 px-2">
-                <div className="bg-success bg-opacity-15 text-success p-3 rounded-circle d-inline-block mb-3">
+                <div className="bg-success bg-opacity-15 text-success p-3 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '64px', height: '64px' }}>
                   <CheckCircle2 size={40} />
                 </div>
-                <h6 className="fw-bold text-dark mb-1">Murojaatingiz Yuborildi!</h6>
-                <p className="text-muted small mb-0">
-                  Menejerimiz qisqa vaqt ichida telefon raqamingiz orqali bog‘lanadi yoki chatda javob beradi.
+                <h5 className="fw-extrabold text-dark mb-2 font-heading">Murojaatingiz Yuborildi!</h5>
+                <p className="text-muted small mb-0" style={{ lineHeight: '1.5' }}>
+                  Menejerimiz qisqa vaqt ichida ko‘rsatilgan telefon raqamingiz orqali bog‘lanadi.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
-                <div className="mb-2">
-                  <label className="form-label small fw-bold text-muted mb-1">Muammo Turi</label>
+                <div className="mb-3">
+                  <label className="form-label small fw-bold text-dark mb-1">Muammo Turi</label>
                   <select
-                    className="form-select form-select-sm rounded-3 fw-semibold"
+                    className="form-select rounded-3 fw-semibold text-dark shadow-sm border-warning border-opacity-30"
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   >
@@ -142,11 +163,11 @@ const CustomerChatWidget = () => {
                   </select>
                 </div>
 
-                <div className="mb-2">
-                  <label className="form-label small fw-bold text-muted mb-1">Ismingiz</label>
+                <div className="mb-3">
+                  <label className="form-label small fw-bold text-dark mb-1">Ismingiz</label>
                   <input
                     type="text"
-                    className="form-control form-control-sm rounded-3"
+                    className="form-control rounded-3 shadow-sm border-warning border-opacity-30"
                     placeholder="Ismingizni kiriting"
                     required
                     value={formData.senderName}
@@ -154,11 +175,11 @@ const CustomerChatWidget = () => {
                   />
                 </div>
 
-                <div className="mb-2">
-                  <label className="form-label small fw-bold text-muted mb-1">Telefon Raqamingiz</label>
+                <div className="mb-3">
+                  <label className="form-label small fw-bold text-dark mb-1">Telefon Raqamingiz</label>
                   <input
                     type="tel"
-                    className="form-control form-control-sm rounded-3"
+                    className="form-control rounded-3 shadow-sm border-warning border-opacity-30"
                     placeholder="+998 90 123 45 67"
                     required
                     value={formData.senderPhone}
@@ -166,12 +187,12 @@ const CustomerChatWidget = () => {
                   />
                 </div>
 
-                <div className="mb-3">
-                  <label className="form-label small fw-bold text-muted mb-1">Muammo va Xabar Tavsifi</label>
+                <div className="mb-4">
+                  <label className="form-label small fw-bold text-dark mb-1">Muammo Tavsifi</label>
                   <textarea
-                    className="form-control form-control-sm rounded-3"
+                    className="form-control rounded-3 shadow-sm border-warning border-opacity-30"
                     rows="3"
-                    placeholder="Duch kelgan muammoingiz yoki savolingizni yozing..."
+                    placeholder="Duch kelgan muammoingiz yoki savolingizni batafsil yozing..."
                     required
                     value={formData.messageText}
                     onChange={(e) => setFormData({ ...formData, messageText: e.target.value })}
@@ -181,10 +202,10 @@ const CustomerChatWidget = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="btn btn-warning w-100 py-2 rounded-pill fw-bold text-white shadow-sm d-flex align-items-center justify-content-center gap-2"
+                  className="btn btn-warning w-100 py-2.5 rounded-pill fw-extrabold text-white shadow d-flex align-items-center justify-content-center gap-2 transition-transform hover-lift"
                   style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}
                 >
-                  <Send size={16} />
+                  <Send size={18} />
                   <span>{loading ? 'Yuborilmoqda...' : 'Xabarni Yuborish'}</span>
                 </button>
               </form>
