@@ -6,6 +6,7 @@ import {
   Layers,
   ShoppingBag,
   Users,
+  MessageSquare,
   LogOut,
   ExternalLink,
   Menu as MenuIcon,
@@ -177,6 +178,23 @@ const AdminLayout = () => {
                 <span>Mijozlar</span>
               </NavLink>
             </li>
+
+            <li className="nav-item">
+              <NavLink
+                to="/admin/messages"
+                className={({ isActive }) =>
+                  `nav-link d-flex align-items-center gap-3 px-3 py-2 rounded-3 text-white transition-all ${
+                    isActive
+                      ? 'bg-warning text-dark fw-extrabold shadow-sm'
+                      : 'hover-bg-secondary opacity-75 hover-opacity-100'
+                  }`
+                }
+                onClick={() => setSidebarOpen(false)}
+              >
+                <MessageSquare size={18} />
+                <span>Xabarlar & Chat</span>
+              </NavLink>
+            </li>
           </ul>
         </div>
 
@@ -209,7 +227,7 @@ const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* Main Content Area with Clean Margin Offset Fix */}
+      {/* Main Content Area */}
       <div className="admin-main-wrapper flex-grow-1">
         {/* Top Navbar */}
         <header className="bg-white border-bottom py-3 px-4 d-flex align-items-center justify-content-between sticky-top shadow-sm z-2">
@@ -223,7 +241,7 @@ const AdminLayout = () => {
             <h5 className="fw-extrabold text-dark mb-0 font-heading">FAZO Restorani Admin Paneli</h5>
           </div>
 
-          {/* Sleek 3D iOS-Style Status Toggle Switch Widget */}
+          {/* 3D Status Toggle Switch Widget */}
           <div className="d-flex align-items-center gap-2">
             <span className="small text-muted fw-bold d-none d-md-inline">Restoran Faoliyati:</span>
             <button

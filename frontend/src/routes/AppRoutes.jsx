@@ -47,6 +47,7 @@ import AdminProducts from '../admin/AdminProducts';
 import AdminCategories from '../admin/AdminCategories';
 import AdminOrders from '../admin/AdminOrders';
 import AdminCustomers from '../admin/AdminCustomers';
+import AdminMessages from '../admin/AdminMessages';
 import AdminRoutes from './AdminRoutes';
 
 const AppRoutes = () => {
@@ -98,6 +99,7 @@ const AppRoutes = () => {
           <Route path="categories" element={<AdminCategories />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="customers" element={<AdminCustomers />} />
+          <Route path="messages" element={<AdminMessages />} />
         </Route>
       </Route>
 

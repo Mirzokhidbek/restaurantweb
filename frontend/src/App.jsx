@@ -12,6 +12,7 @@ import { RestaurantStatusProvider, useRestaurantStatus } from './context/Restaur
 import { formatCurrency } from './utils/formatCurrency';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import CustomerChatWidget from './components/CustomerChatWidget';
 import AppRoutes from './routes/AppRoutes';
 import { ShoppingBag, ArrowRight, AlertTriangle } from 'lucide-react';
 
@@ -68,6 +69,7 @@ const AppContent = () => {
         <AppRoutes />
       </div>
       {!isAdmin && <Footer />}
+      {!isAdmin && <CustomerChatWidget />}
       <MobileStickyCartButton />
     </div>
   );
