@@ -7,7 +7,8 @@ import ErrorMessage from '../components/ErrorMessage';
 import productService from '../services/productService';
 import categoryService from '../services/categoryService';
 import { useLanguage } from '../context/LanguageContext';
-import { Search, ArrowUpDown, Sparkles } from 'lucide-react';
+import { Search, ArrowUpDown, Sparkles, Utensils } from 'lucide-react';
+
 
 const Menu = () => {
   const { t } = useLanguage();
