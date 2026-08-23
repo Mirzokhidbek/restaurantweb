@@ -1,12 +1,28 @@
+/**
+ * FAZO Restorani Namangan - Category Controller
+ * 
+ * Clean Code Architecture Principles:
+ * - Single Responsibility Principle (SRP): Handles Category CRUD operations only.
+ * - Standardized API Response Format: { success: boolean, message: string, data: any }
+ * - Input Sanitation: String trimming and case-insensitive uniqueness validation.
+ * - Consistent Error Handling via Express Next Middleware.
+ */
+
 import Category from '../models/Category.js';
 
-// @desc    Get all categories (sorted alphabetically by name)
-// @route   GET /api/categories
-// @access  Public
+/**
+ * @desc    Get all categories with dynamic query sorting options
+ * @route   GET /api/categories
+ * @access  Public
+ * @param   {Object} req - Express request object (supports query: ?sort=newest|oldest|name)
+ * @param   {Object} res - Express response object
+ * @param   {Function} next - Express next middleware function
+ */
 export const getCategories = async (req, res, next) => {
   try {
     const { sort } = req.query;
-    let sortOptions = { name: 1 }; // Default: alphabetical order A-Z
+
+    let sortOptions = { name: 1 }; // Default: Alphabetical order (A-Z)
 
     if (sort === 'newest') {
       sortOptions = { createdAt: -1 };
@@ -15,6 +31,7 @@ export const getCategories = async (req, res, next) => {
     }
 
     const categories = await Category.find({}).sort(sortOptions);
+
     res.json({
       success: true,
       message: 'Kategoriyalar ro‘yxati muvaffaqiyatli olindi.',
@@ -25,18 +42,25 @@ export const getCategories = async (req, res, next) => {
   }
 };
 
-// @desc    Get category by ID
-// @route   GET /api/categories/:id
-// @access  Public
+/**
+ * @desc    Get single category by MongoDB ObjectId
+ * @route   GET /api/categories/:id
+ * @access  Public
+ * @param   {Object} req - Express request object (params: id)
+ * @param   {Object} res - Express response object
+ * @param   {Function} next - Express next middleware function
+ */
 export const getCategoryById = async (req, res, next) => {
   try {
     const category = await Category.findById(req.params.id);
+
     if (!category) {
       return res.status(404).json({
         success: false,
         message: 'Kategoriya topilmadi.',
       });
     }
+
     res.json({
       success: true,
       message: 'Kategoriya ma’lumotlari olindi.',
@@ -47,21 +71,32 @@ export const getCategoryById = async (req, res, next) => {
   }
 };
 
-// @desc    Create category
-// @route   POST /api/categories
-// @access  Private/Admin
+/**
+ * @desc    Create a new food category
+ * @route   POST /api/categories
+ * @access  Private / Admin
+ * @param   {Object} req - Express request object (body: name, description, image)
+ * @param   {Object} res - Express response object
+ * @param   {Function} next - Express next middleware function
+ */
 export const createCategory = async (req, res, next) => {
   try {
     const { name, description, image } = req.body;
 
-    if (!name) {
+    const trimmedName = name ? name.trim() : '';
+
+    if (!trimmedName) {
       return res.status(400).json({
         success: false,
         message: 'Kategoriya nomi majburiy kiritilishi kerak.',
       });
     }
 
-    const existingCategory = await Category.findOne({ name });
+    // Case-insensitive duplicate check
+    const existingCategory = await Category.findOne({
+      name: { $regex: `^${trimmedName}$`, $options: 'i' },
+    });
+
     if (existingCategory) {
       return res.status(400).json({
         success: false,
@@ -70,9 +105,9 @@ export const createCategory = async (req, res, next) => {
     }
 
     const category = await Category.create({
-      name,
-      description: description || '',
-      image: image || '',
+      name: trimmedName,
+      description: description ? description.trim() : '',
+      image: image ? image.trim() : '',
     });
 
     res.status(201).json({
@@ -85,9 +120,14 @@ export const createCategory = async (req, res, next) => {
   }
 };
 
-// @desc    Update category
-// @route   PUT /api/categories/:id
-// @access  Private/Admin
+/**
+ * @desc    Update existing food category details
+ * @route   PUT /api/categories/:id
+ * @access  Private / Admin
+ * @param   {Object} req - Express request object (params: id, body: name, description, image)
+ * @param   {Object} res - Express response object
+ * @param   {Function} next - Express next middleware function
+ */
 export const updateCategory = async (req, res, next) => {
   try {
     const { name, description, image } = req.body;
@@ -100,9 +140,32 @@ export const updateCategory = async (req, res, next) => {
       });
     }
 
-    category.name = name || category.name;
-    category.description = description !== undefined ? description : category.description;
-    category.image = image !== undefined ? image : category.image;
+    if (name && name.trim() !== '') {
+      const trimmedName = name.trim();
+
+      // Check if new name conflicts with another existing category
+      const conflictCategory = await Category.findOne({
+        _id: { $ne: category._id },
+        name: { $regex: `^${trimmedName}$`, $options: 'i' },
+      });
+
+      if (conflictCategory) {
+        return res.status(400).json({
+          success: false,
+          message: 'Ushbu nomli kategoriya allaqachon mavjud.',
+        });
+      }
+
+      category.name = trimmedName;
+    }
+
+    if (description !== undefined) {
+      category.description = description ? description.trim() : '';
+    }
+
+    if (image !== undefined) {
+      category.image = image ? image.trim() : '';
+    }
 
     const updatedCategory = await category.save();
 
@@ -116,9 +179,14 @@ export const updateCategory = async (req, res, next) => {
   }
 };
 
-// @desc    Delete category
-// @route   DELETE /api/categories/:id
-// @access  Private/Admin
+/**
+ * @desc    Delete category by MongoDB ObjectId
+ * @route   DELETE /api/categories/:id
+ * @access  Private / Admin
+ * @param   {Object} req - Express request object (params: id)
+ * @param   {Object} res - Express response object
+ * @param   {Function} next - Express next middleware function
+ */
 export const deleteCategory = async (req, res, next) => {
   try {
     const category = await Category.findById(req.params.id);
