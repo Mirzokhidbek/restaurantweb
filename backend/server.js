@@ -25,6 +25,7 @@ import faqRoutes from './routes/faqRoutes.js';
 import bookmarkRoutes from './routes/bookmarkRoutes.js';
 import settingRoutes from './routes/settingRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 
 // Connect Database (MongoDB Atlas)
 connectDB();
@@ -55,6 +56,7 @@ app.use('/api/faqs', faqRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
 app.use('/api/settings', settingRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Global Error Handler Middleware
 app.use(notFound);
