@@ -3,6 +3,46 @@ import Category from '../models/Category.js';
 import Setting from '../models/Setting.js';
 
 /**
+ * Local Smart Recommendation Engine Fallback
+ */
+const generateLocalRecommendation = (userMessage, products = []) => {
+  const budgetMatch = userMessage.match(/\d+[\s\d]*/);
+  let budget = budgetMatch ? parseInt(budgetMatch[0].replace(/\s/g, ''), 10) : 0;
+  if (budget > 0 && budget < 1000) budget *= 1000; // E.g. "100k" or "100" -> 100000
+
+  if (budget > 0 && products.length > 0) {
+    const sorted = [...products].sort((a, b) => b.price - a.price);
+    const selected = [];
+    let currentTotal = 0;
+
+    for (const p of sorted) {
+      if (currentTotal + p.price <= budget) {
+        selected.push(p);
+        currentTotal += p.price;
+      }
+    }
+
+    if (selected.length > 0) {
+      const itemsList = selected
+        .map((item) => `• 🍽️ **${item.name}** — ${item.price.toLocaleString('uz-UZ')} so‘m`)
+        .join('\n');
+      return `Salom! Ajoyib tanlov. Budjetingiz (${budget.toLocaleString(
+        'uz-UZ'
+      )} so‘m) uchun quyidagi ideal menyu setini taklif qilaman:\n\n${itemsList}\n\n📌 **Jami**: ${currentTotal.toLocaleString(
+        'uz-UZ'
+      )} so‘m.\nYoqimli ishtaha! 😋`;
+    }
+  }
+
+  const populars = products.filter((p) => p.isPopular).slice(0, 3);
+  const popularList = (populars.length > 0 ? populars : products.slice(0, 3))
+    .map((p) => `• ⭐️ **${p.name}** — ${p.price.toLocaleString('uz-UZ')} so‘m`)
+    .join('\n');
+
+  return `Salom! FAZO Restoranimizga xush kelibsiz! 🍽️\nSizga eng ommabop taomlarimizni taklif qilamiz:\n\n${popularList}\n\nAgarda ma'lum bir budjet (masalan, 100,000 so‘m) yozsangiz, mos set yig‘ib beraman! 😊`;
+};
+
+/**
  * Generates an intelligent response using Google Gemini API based on live DB context
  * @param {string} userMessage - User's query or recommendation request
  * @param {Array} history - Previous conversation messages
@@ -11,14 +51,10 @@ import Setting from '../models/Setting.js';
 export const generateAIResponse = async (userMessage, history = []) => {
   const apiKey = process.env.GEMINI_API_KEY;
 
-  if (!apiKey) {
-    throw new Error('GEMINI_API_KEY is not configured in backend/.env');
-  }
-
   // Fetch live restaurant data context from MongoDB
   const products = await Product.find({ isAvailable: true }).populate('category', 'name');
   const categories = await Category.find();
-  const settings = await Setting.findOne() || { isRestaurantOpen: true };
+  const settings = (await Setting.findOne()) || { isRestaurantOpen: true };
 
   const menuContext = products.map((p) => ({
     name: p.name,
@@ -43,7 +79,10 @@ Qoidalaringiz:
 3. Taomlar nomini, narxlarini aniq ko'rsating va emojilardan unumli foydalaning (🍽️, 🍔, 🥩, 🥤, ⭐).
 4. Javoblaringiz qisqa, tushunarli va chiroyli formatlangan bo'lsin.`;
 
-  // Prepare Gemini API request payload
+  if (!apiKey) {
+    return generateLocalRecommendation(userMessage, products);
+  }
+
   const contents = [
     {
       role: 'user',
@@ -51,40 +90,34 @@ Qoidalaringiz:
     },
   ];
 
-  // Call Gemini REST API (gemini-2.0-flash / gemini-1.5-flash fallback)
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const modelsToTry = [
+    'gemini-1.5-flash',
+    'gemini-1.5-pro',
+    'gemini-2.0-flash',
+  ];
 
-  try {
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.warn(`Gemini 2.0 Flash API warning (${response.status}): ${errorText}. Trying gemini-1.5-flash...`);
-      
-      // Fallback to gemini-1.5-flash
-      const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-      const fallbackRes = await fetch(fallbackUrl, {
+  for (const modelName of modelsToTry) {
+    try {
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents }),
       });
-      
-      if (!fallbackRes.ok) {
-        throw new Error(`Gemini API error: ${fallbackRes.statusText}`);
-      }
-      
-      const fallbackData = await fallbackRes.json();
-      return fallbackData.candidates?.[0]?.content?.parts?.[0]?.text || 'Kechirasiz, javob shakllantirishda xatolik yuz berdi.';
-    }
 
-    const data = await response.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Kechirasiz, javob shakllantirishda xatolik yuz berdi.';
-  } catch (error) {
-    console.error('Error generating Gemini AI response:', error);
-    throw error;
+      if (response.ok) {
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) return text;
+      } else {
+        const errText = await response.text();
+        console.warn(`Model ${modelName} returned status ${response.status}: ${errText}`);
+      }
+    } catch (err) {
+      console.warn(`Failed call to ${modelName}:`, err.message);
+    }
   }
+
+  // Fallback to Local Smart Recommendation Engine if API calls fail
+  return generateLocalRecommendation(userMessage, products);
 };
